@@ -4,9 +4,21 @@
   <title>Edit VCard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body{font-family:Arial;padding:20px}
+    body{
+      font-family:Arial;
+      padding:20px;
+      background:#f5f7fb;
+    }
+    h2{margin-top:0}
     input{margin-bottom:15px}
-    small{color:#666}
+    small{color:#666;display:block;margin-bottom:8px}
+    .box{
+      background:#fff;
+      padding:15px;
+      border-radius:10px;
+      margin-bottom:20px;
+      box-shadow:0 2px 6px rgba(0,0,0,.1);
+    }
   </style>
 </head>
 
@@ -14,39 +26,63 @@
 
 <h2>Edit Your VCard</h2>
 
-<h4>📸 Profile Photo</h4>
-<small>JPG/PNG · Max 2MB · Recommended 600×600</small><br>
-<input type="file" id="profile" accept="image/png,image/jpeg">
+<div class="box">
+  <h4>📸 Profile Photo</h4>
+  <small>JPG / PNG · Max 2MB · Recommended 600×600 (square)</small>
+  <input type="file" id="profile" accept="image/png,image/jpeg">
+</div>
 
-<h4>🖼️ Gallery Images</h4>
-<small>JPG/PNG · Max 3MB · Recommended 1080×1080</small><br><br>
-
-<input type="file" id="g1" accept="image/png,image/jpeg"><br>
-<input type="file" id="g2" accept="image/png,image/jpeg"><br>
-<input type="file" id="g3" accept="image/png,image/jpeg"><br>
-<input type="file" id="g4" accept="image/png,image/jpeg"><br>
+<div class="box">
+  <h4>🖼️ Gallery Images</h4>
+  <small>JPG / PNG · Max 3MB each · Recommended 1080×1080</small>
+  <input type="file" id="g1" accept="image/png,image/jpeg"><br>
+  <input type="file" id="g2" accept="image/png,image/jpeg"><br>
+  <input type="file" id="g3" accept="image/png,image/jpeg"><br>
+  <input type="file" id="g4" accept="image/png,image/jpeg"><br>
+</div>
 
 <script>
+/* ===============================
+   CONFIG
+================================ */
 const API_URL = "https://script.google.com/macros/s/AKfycbyO8PAuVdabQp2zSlhdWWA2btLpo7XMfbAGQqb1zqCbfvFPDyNQsTyxTDPyBl4tlPyTAw/exec";
-const slug = new URLSearchParams(location.search).get("slug");
+const slug = new URLSearchParams(window.location.search).get("slug");
 
+/* ===============================
+   SLUG CHECK
+================================ */
+if (!slug) {
+  alert("Invalid edit link. Slug missing.");
+  throw new Error("Slug missing");
+}
+
+/* ===============================
+   UPLOAD FUNCTION
+================================ */
 function upload(file, type, slot, maxMB) {
+
   if (!file) return;
 
+  // Type validation
   if (!["image/png","image/jpeg"].includes(file.type)) {
-    alert("Only JPG or PNG allowed");
+    alert("Only JPG or PNG images allowed");
     return;
   }
 
+  // Size validation
   if (file.size > maxMB * 1024 * 1024) {
-    alert("File too large. Max " + maxMB + "MB");
+    alert("File too large. Max " + maxMB + "MB allowed");
     return;
   }
 
   const reader = new FileReader();
   reader.onload = () => {
+
     fetch(API_URL, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({
         slug: slug,
         type: type,
@@ -55,15 +91,26 @@ function upload(file, type, slot, maxMB) {
         maxSizeMB: maxMB
       })
     })
-    .then(r => r.json())
-    .then(res => {
-      if (res.error) alert(res.error);
-      else alert("Uploaded successfully");
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        alert("Error: " + data.error);
+      } else {
+        alert("Upload successful ✅");
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Upload failed. Try again.");
     });
   };
+
   reader.readAsDataURL(file);
 }
 
+/* ===============================
+   INPUT EVENTS
+================================ */
 profile.onchange = () => upload(profile.files[0], "profile", null, 2);
 g1.onchange = () => upload(g1.files[0], "gallery", 1, 3);
 g2.onchange = () => upload(g2.files[0], "gallery", 2, 3);
