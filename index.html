@@ -43,6 +43,15 @@
   <p id="address"></p>
 </div>
 
+  <!-- QUICK ACTIONS -->
+<div class="box">
+  <div class="actions">
+    <a id="callBtn">📞 Call</a>
+    <a id="whatsappBtn">💬 WhatsApp</a>
+    <a id="saveContactBtn">➕ Add to Contact</a>
+  </div>
+</div>
+  
 <!-- LINKS -->
 <div class="box" id="linksBox">
   <h3>Links</h3>
@@ -68,72 +77,53 @@
 </div>
 
 <script>
-/* ===== TEMP DATA (Google Sheet baad me) ===== */
+/* ===== TEMP DATA ===== */
 const data = {
   name:"Leslie Murphy",
   title:"Financial Manager",
   company:"AceFinance",
-  phone:"+1 234567890",
+  phone:"+1234567890",
   email:"leslie@acefinance.com",
   address:"New York, USA",
-  about:"I am Leslie, working as marketing manager at AceFinance.",
   photo:"https://via.placeholder.com/150",
 
-  links:{
-    whatsapp:"https://wa.me/1234567890",
-    maps:"",
-    booking:"https://calendly.com",
-    instagram:"https://instagram.com",
-    linkedin:"",
-    facebook:"",
-    website:"https://example.com",
-    custom1:{label:"Portfolio",url:"https://portfolio.com"},
-    custom2:{label:"Blog",url:""}
-  },
-
-  gallery:[
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/301"
-  ],
-
-  video:"https://www.youtube.com/embed/dQw4w9WgXcQ"
+  whatsapp:"+1234567890"
 };
-/* =========================================== */
+/* ===================== */
 
-function hide(id){document.getElementById(id).style.display="none"}
+// CALL
+document.getElementById("callBtn").href = "tel:" + data.phone;
 
-document.getElementById("name").innerText=data.name||"";
-document.getElementById("title").innerText=data.title||"";
-document.getElementById("company").innerText=data.company||"";
-document.getElementById("photo").src=data.photo||"";
-
-if(data.phone) document.getElementById("phone").innerText="📞 "+data.phone; else hide("phone");
-if(data.email) document.getElementById("email").innerText="✉️ "+data.email; else hide("email");
-if(data.address) document.getElementById("address").innerText="📍 "+data.address; else hide("address");
-
-if(!data.phone && !data.email && !data.address) hide("contactBox");
-
-if(data.about) document.getElementById("about").innerText=data.about; else hide("aboutBox");
-
-const linksDiv=document.getElementById("links");
-for(let k in data.links){
-  let l=data.links[k];
-  if(typeof l==="string" && l){
-    linksDiv.innerHTML+=`<a href="${l}" target="_blank">${k}</a>`;
-  }
-  if(typeof l==="object" && l.url){
-    linksDiv.innerHTML+=`<a href="${l.url}" target="_blank">${l.label}</a>`;
-  }
+// WHATSAPP
+if(data.whatsapp){
+  document.getElementById("whatsappBtn").href =
+    "https://wa.me/" + data.whatsapp.replace(/\D/g,'');
+}else{
+  document.getElementById("whatsappBtn").style.display="none";
 }
-if(!linksDiv.innerHTML) hide("linksBox");
 
-const gal=document.getElementById("gallery");
-if(data.gallery && data.gallery.length){
-  data.gallery.forEach(img=>gal.innerHTML+=`<img src="${img}">`);
-}else hide("galleryBox");
+// ADD TO CONTACT (VCF)
+document.getElementById("saveContactBtn").onclick = function(){
+  const vcf = `
+BEGIN:VCARD
+VERSION:3.0
+FN:${data.name}
+ORG:${data.company}
+TITLE:${data.title}
+TEL:${data.phone}
+EMAIL:${data.email}
+ADR:${data.address}
+END:VCARD`;
 
-if(data.video) document.getElementById("video").src=data.video; else hide("videoBox");
+  const blob = new Blob([vcf], { type: 'text/vcard' });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = data.name.replace(" ","_") + ".vcf";
+  a.click();
+};
 </script>
-
+  
 </body>
 </html>
