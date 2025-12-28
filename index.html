@@ -1,29 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Modern Digital VCard</title>
+  <title>Digital VCard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body{margin:0;font-family:Arial;background:#f2f2f2}
+    body{
+      margin:0;
+      font-family:Arial, sans-serif;
+      background:#e9eef6;
+      display:flex;
+      justify-content:center;
+    }
+    .vcard{
+      width:100%;
+      max-width:420px;
+      background:#f2f5fb;
+      min-height:100vh;
+    }
 
+    /* HERO */
     .hero{
       background:#5b8cff;
       color:#fff;
       text-align:center;
-      padding:40px 20px 30px
+      padding:35px 20px 25px;
     }
     .hero img{
       width:110px;height:110px;
       border-radius:50%;
       border:4px solid #fff;
-      object-fit:cover
+      object-fit:cover;
     }
     .hero h2{margin:10px 0 5px}
     .hero p{margin:2px;font-size:14px;opacity:.9}
 
+    /* ICON ACTIONS */
     .icon-actions{
       background:#fff;
-      margin:-25px 20px 20px;
+      margin:-25px 15px 15px;
       border-radius:20px;
       padding:15px;
       display:flex;
@@ -33,23 +47,24 @@
     .icon-actions a{
       text-decoration:none;
       font-size:22px;
-      color:#5b8cff
+      color:#5b8cff;
     }
 
-    .box{
+    /* CARD */
+    .card{
       background:#fff;
-      margin:20px;
-      padding:20px;
-      border-radius:20px;
+      margin:15px;
+      padding:18px;
+      border-radius:18px;
       box-shadow:0 4px 10px rgba(0,0,0,.08)
     }
+    .card h3{margin-top:0}
 
-    .hours-list{
-      list-style:none;
-      padding:0;
-      margin:0
+    /* HOURS */
+    .hours{
+      list-style:none;padding:0;margin:0
     }
-    .hours-list li{
+    .hours li{
       display:flex;
       justify-content:space-between;
       padding:6px 0;
@@ -57,118 +72,168 @@
       font-size:14px
     }
 
+    /* GALLERY */
+    .gallery{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+    }
+    .gallery img{
+      width:100%;
+      border-radius:10px;
+      object-fit:cover;
+    }
+
     iframe{
       width:100%;
       border-radius:15px;
       border:0;
-      margin-top:10px
     }
+
+    /* LINKS */
+    .links a{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      text-decoration:none;
+      color:#333;
+      padding:10px;
+      border-radius:12px;
+      background:#f2f5fb;
+      margin-bottom:8px;
+      font-size:14px;
+    }
+    .icon{
+      width:32px;height:32px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:16px;
+      color:#fff;
+    }
+    .fb{background:#1877f2}
+    .ig{background:#e1306c}
+    .wa{background:#25d366}
+    .li{background:#0077b5}
+    .web{background:#5b8cff}
   </style>
 </head>
+
 <body>
+<div class="vcard">
 
 <!-- HERO -->
 <div class="hero">
-  <img id="photo">
-  <h2 id="name"></h2>
-  <p id="title"></p>
-  <p id="company"></p>
+  <img src="https://via.placeholder.com/150">
+  <h2>Leslie Murphy</h2>
+  <p>Financial Manager</p>
+  <p>AceFinance</p>
 </div>
 
-<!-- ICON BUTTONS -->
+<!-- QUICK ICONS -->
 <div class="icon-actions">
-  <a id="callBtn">📞</a>
-  <a id="whatsappBtn">💬</a>
-  <a id="instagramBtn">📸</a>
-  <a id="facebookBtn">📘</a>
+  <a href="tel:+1234567890">📞</a>
+  <a href="https://wa.me/1234567890">🟢</a>
+  <a href="#">📸</a>
+  <a href="#">📘</a>
 </div>
 
-<!-- ABOUT ME -->
-<div class="box">
+  <!-- ADD TO CONTACT -->
+<div class="card">
+  <h3>Save Contact</h3>
+  <button onclick="saveContact()" style="
+    width:100%;padding:12px;border:0;
+    border-radius:12px;
+    background:#5b8cff;color:#fff;
+    font-size:16px">
+    ➕ Add to Contacts
+  </button>
+</div>
+
+<!-- ABOUT -->
+<div class="card">
   <h3>About Me</h3>
-  <p id="about"></p>
+  <p>
+    I am Leslie, working as marketing manager at AceFinance.
+  </p>
 </div>
 
 <!-- CONTACT -->
-<div class="box">
+<div class="card">
   <h3>Contact</h3>
-  <p><strong>Name:</strong> <span id="fullName"></span></p>
-  <p><strong>Address:</strong> <span id="address"></span></p>
-  <p><strong>WhatsApp:</strong> <span id="whatsappText"></span></p>
+  <p><b>Name:</b> Leslie Murphy</p>
+  <p><b>Address:</b> New York, USA</p>
+  <p><b>WhatsApp:</b> +1 234 567 890</p>
 
   <h4>Hours of Operation</h4>
-  <ul class="hours-list" id="hoursList"></ul>
+  <ul class="hours">
+    <li><span>Sunday</span><span>10 am – 12:30 am</span></li>
+    <li><span>Monday</span><span>3 – 7 pm</span></li>
+    <li><span>Tuesday</span><span>3 – 7 pm</span></li>
+    <li><span>Wednesday</span><span>3 – 7 pm</span></li>
+    <li><span>Thursday</span><span>3 – 7 pm</span></li>
+    <li><span>Friday</span><span>3 am – 7 pm</span></li>
+    <li><span>Saturday</span><span>3 – 7 pm</span></li>
+  </ul>
 
   <h4>Location</h4>
-  <div id="mapBox"></div>
+  <iframe height="200"
+    src="https://www.google.com/maps?q=New%20York&output=embed">
+  </iframe>
+</div>
+
+<!-- LINKS -->
+<div class="card">
+  <h3>Links</h3>
+  <div class="links">
+    <a href="#"><span class="icon fb">f</span>Facebook</a>
+    <a href="#"><span class="icon ig">📷</span>Instagram</a>
+    <a href="#"><span class="icon li">in</span>LinkedIn</a>
+    <a href="#"><span class="icon web">🌐</span>Website</a>
+    <a href="#"><span class="icon web">🔗</span>Custom Link</a>
+  </div>
+  
+<!-- GALLERY -->
+<div class="card">
+  <h3>Gallery</h3>
+  <div class="gallery">
+    <img src="https://via.placeholder.com/300">
+    <img src="https://via.placeholder.com/301">
+    <img src="https://via.placeholder.com/302">
+  </div>
+</div>
+
+<!-- VIDEO -->
+<div class="card">
+  <h3>Video</h3>
+  <iframe height="200"
+    src="https://www.youtube.com/embed/dQw4w9WgXcQ">
+  </iframe>
+</div>
+
+
+</div>
+
 </div>
 
 <script>
-/* ===== TEMP DATA (BAAD ME GOOGLE SHEET SE AAYEGA) ===== */
-const data = {
-  name:"Leslie Murphy",
-  title:"Financial Manager",
-  company:"AceFinance",
+function saveContact(){
+  const vcf=`BEGIN:VCARD
+VERSION:3.0
+FN:Leslie Murphy
+ORG:AceFinance
+TITLE:Financial Manager
+TEL:+1234567890
+ADR:New York, USA
+END:VCARD`;
 
-  phone:"+1234567890",
-  whatsapp:"+1234567890",
-  instagram:"https://instagram.com",
-  facebook:"https://facebook.com",
-
-  about:"I am Leslie, working as marketing manager at AceFinance.",
-
-  address:"New York, USA",
-
-  hours:{
-    Sunday:"10 am – 12:30 am",
-    Monday:"3 – 7 pm",
-    Tuesday:"3 – 7 pm",
-    Wednesday:"3 – 7 pm",
-    Thursday:"3 – 7 pm",
-    Friday:"3 am – 7 pm",
-    Saturday:"3 – 7 pm"
-  },
-
-  mapIframe:`<iframe 
-    src="https://www.google.com/maps?q=New%20York&output=embed" 
-    height="200"></iframe>`,
-
-  photo:"https://via.placeholder.com/150"
-};
-/* ===================================================== */
-
-// HERO
-photo.src=data.photo;
-name.innerText=data.name;
-title.innerText=data.title;
-company.innerText=data.company;
-
-// ICON BUTTONS
-callBtn.href="tel:"+data.phone;
-whatsappBtn.href="https://wa.me/"+data.whatsapp.replace(/\D/g,"");
-instagramBtn.href=data.instagram;
-facebookBtn.href=data.facebook;
-
-// ABOUT
-about.innerText=data.about;
-
-// CONTACT
-fullName.innerText=data.name;
-address.innerText=data.address;
-whatsappText.innerText=data.whatsapp;
-
-// HOURS LIST
-const hoursList=document.getElementById("hoursList");
-for(let day in data.hours){
-  hoursList.innerHTML+=`
-    <li>
-      <span>${day}</span>
-      <span>${data.hours[day]}</span>
-    </li>`;
+  const blob=new Blob([vcf],{type:"text/vcard"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="Leslie_Murphy.vcf";
+  a.click();
 }
-
-// MAP
-mapBox.innerHTML=data.mapIframe;
 </script>
 
 </body>
