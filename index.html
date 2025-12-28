@@ -175,6 +175,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbyO8PAuVdabQp2zSlhdWWA2
 /* 🔑 GET SLUG FROM URL (?slug=marketingsena) */
 const params = new URLSearchParams(window.location.search);
 const slug = params.get("slug");
+  if (slug) {
+  history.replaceState(null, "", "/business-card/" + slug);
+}
 
 if (!slug) {
   document.body.innerHTML = "<h2>Invalid VCard URL</h2>";
