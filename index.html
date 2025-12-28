@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Digital VCard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{margin:0;font-family:Arial;background:#f2f2f2}
+    .hero{background:#5b8cff;color:#fff;text-align:center;padding:40px 20px}
+    .hero img{width:110px;height:110px;border-radius:50%;border:4px solid #fff;object-fit:cover}
+    .hero h2{margin:10px 0 5px}
+    .hero p{margin:2px;font-size:14px;opacity:.9}
+
+    .box{background:#fff;margin:20px;padding:20px;border-radius:20px;
+      box-shadow:0 4px 10px rgba(0,0,0,.08)}
+
+    .actions{display:flex;flex-wrap:wrap;gap:10px}
+    .actions a{
+      flex:1 1 45%;text-align:center;padding:10px;border-radius:12px;
+      background:#eef3ff;color:#5b8cff;text-decoration:none;font-size:14px
+    }
+
+    .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .gallery img{width:100%;border-radius:10px}
+
+    iframe{width:100%;border-radius:15px}
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <img id="photo">
+  <h2 id="name"></h2>
+  <p id="title"></p>
+  <p id="company"></p>
+</div>
+
+<!-- CONTACT -->
+<div class="box" id="contactBox">
+  <h3>Contact</h3>
+  <p id="phone"></p>
+  <p id="email"></p>
+  <p id="address"></p>
+</div>
+
+<!-- LINKS -->
+<div class="box" id="linksBox">
+  <h3>Links</h3>
+  <div class="actions" id="links"></div>
+</div>
+
+<!-- ABOUT -->
+<div class="box" id="aboutBox">
+  <h3>About</h3>
+  <p id="about"></p>
+</div>
+
+<!-- GALLERY -->
+<div class="box" id="galleryBox">
+  <h3>Gallery</h3>
+  <div class="gallery" id="gallery"></div>
+</div>
+
+<!-- VIDEO -->
+<div class="box" id="videoBox">
+  <h3>Video</h3>
+  <iframe id="video" height="200"></iframe>
+</div>
+
+<script>
+/* ===== TEMP DATA (Google Sheet baad me) ===== */
+const data = {
+  name:"Leslie Murphy",
+  title:"Financial Manager",
+  company:"AceFinance",
+  phone:"+1 234567890",
+  email:"leslie@acefinance.com",
+  address:"New York, USA",
+  about:"I am Leslie, working as marketing manager at AceFinance.",
+  photo:"https://via.placeholder.com/150",
+
+  links:{
+    whatsapp:"https://wa.me/1234567890",
+    maps:"",
+    booking:"https://calendly.com",
+    instagram:"https://instagram.com",
+    linkedin:"",
+    facebook:"",
+    website:"https://example.com",
+    custom1:{label:"Portfolio",url:"https://portfolio.com"},
+    custom2:{label:"Blog",url:""}
+  },
+
+  gallery:[
+    "https://via.placeholder.com/300",
+    "https://via.placeholder.com/301"
+  ],
+
+  video:"https://www.youtube.com/embed/dQw4w9WgXcQ"
+};
+/* =========================================== */
+
+function hide(id){document.getElementById(id).style.display="none"}
+
+document.getElementById("name").innerText=data.name||"";
+document.getElementById("title").innerText=data.title||"";
+document.getElementById("company").innerText=data.company||"";
+document.getElementById("photo").src=data.photo||"";
+
+if(data.phone) document.getElementById("phone").innerText="📞 "+data.phone; else hide("phone");
+if(data.email) document.getElementById("email").innerText="✉️ "+data.email; else hide("email");
+if(data.address) document.getElementById("address").innerText="📍 "+data.address; else hide("address");
+
+if(!data.phone && !data.email && !data.address) hide("contactBox");
+
+if(data.about) document.getElementById("about").innerText=data.about; else hide("aboutBox");
+
+const linksDiv=document.getElementById("links");
+for(let k in data.links){
+  let l=data.links[k];
+  if(typeof l==="string" && l){
+    linksDiv.innerHTML+=`<a href="${l}" target="_blank">${k}</a>`;
+  }
+  if(typeof l==="object" && l.url){
+    linksDiv.innerHTML+=`<a href="${l.url}" target="_blank">${l.label}</a>`;
+  }
+}
+if(!linksDiv.innerHTML) hide("linksBox");
+
+const gal=document.getElementById("gallery");
+if(data.gallery && data.gallery.length){
+  data.gallery.forEach(img=>gal.innerHTML+=`<img src="${img}">`);
+}else hide("galleryBox");
+
+if(data.video) document.getElementById("video").src=data.video; else hide("videoBox");
+</script>
+
+</body>
+</html>
