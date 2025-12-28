@@ -173,13 +173,17 @@ let DATA=null;
 const API_URL="https://script.google.com/macros/s/AKfycbyO8PAuVdabQp2zSlhdWWA2btLpo7XMfbAGQqb1zqCbfvFPDyNQsTyxTDPyBl4tlPyTAw/exec";
 
 /* 🔑 SLUG FROM CLEAN URL */
-const slug=location.pathname.replace(/\/$/,"").split("/").pop();
+const params = new URLSearchParams(location.search);
+const slug = params.get("slug");
+
+if (!slug) {
+  document.body.innerHTML = "<h2>Invalid VCard URL</h2>";
+}
+
 
 /* FETCH DATA */
-fetch(API_URL+"?slug="+slug)
-.then(r=>r.json())
-.then(d=>{
-DATA=d;
+fetch(API_URL + "?slug=" + slug)
+
 
 /* HERO */
 photo.src=d.photo_url||""; name.innerText=d.full_name||"";
