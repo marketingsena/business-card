@@ -4,7 +4,7 @@
   <title>Digital VCard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- FONT AWESOME -->
+  <!-- Font Awesome -->
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
@@ -22,7 +22,6 @@
       background:#f2f5fb;
       min-height:100vh;
     }
-
     .hero{
       background:#5b8cff;
       color:#fff;
@@ -47,7 +46,7 @@
       justify-content:space-around;
       box-shadow:0 4px 10px rgba(0,0,0,.1)
     }
-    .icon-actions a i{font-size:22px}
+    .icon-actions i{font-size:22px}
     .icon-actions a:nth-child(1) i{color:#5b8cff}
     .icon-actions a:nth-child(2) i{color:#25d366}
     .icon-actions a:nth-child(3) i{color:#e1306c}
@@ -61,14 +60,10 @@
       box-shadow:0 4px 10px rgba(0,0,0,.08)
     }
 
-    .hours{
-      list-style:none;padding:0;margin:0
-    }
+    .hours{list-style:none;padding:0;margin:0}
     .hours li{
-      display:flex;
-      justify-content:space-between;
-      padding:6px 0;
-      border-bottom:1px solid #eee;
+      display:flex;justify-content:space-between;
+      padding:6px 0;border-bottom:1px solid #eee;
       font-size:14px
     }
 
@@ -86,23 +81,14 @@
     iframe{width:100%;border-radius:15px;border:0}
 
     .links a{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding:10px;
-      background:#f2f5fb;
-      margin-bottom:8px;
-      border-radius:12px;
-      text-decoration:none;
-      color:#333;
-      font-size:14px;
+      display:flex;align-items:center;gap:10px;
+      padding:10px;background:#f2f5fb;
+      margin-bottom:8px;border-radius:12px;
+      text-decoration:none;color:#333;font-size:14px;
     }
     .icon{
-      width:32px;height:32px;
-      border-radius:50%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      width:32px;height:32px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
       color:#fff;
     }
     .wa{background:#25d366}
@@ -182,10 +168,17 @@
 
 <script>
 let DATA=null;
-const API_URL="https://script.google.com/macros/s/AKfycbx2KbdEUTvLlF1FNygSi6Ft-D1D_kjXZ64VQ9i7Ybi8s4lbbDv6bpuqURxj4xW85ktj5A/exec";
 
-const id=new URLSearchParams(location.search).get("id");
-fetch(API_URL+"?id="+id).then(r=>r.json()).then(d=>{
+/* 🔴 PASTE YOUR WEB APP URL HERE */
+const API_URL="PASTE_YOUR_WEB_APP_URL_HERE";
+
+/* 🔑 SLUG FROM CLEAN URL */
+const slug=location.pathname.replace(/\/$/,"").split("/").pop();
+
+/* FETCH DATA */
+fetch(API_URL+"?slug="+slug)
+.then(r=>r.json())
+.then(d=>{
 DATA=d;
 
 /* HERO */
@@ -193,7 +186,8 @@ photo.src=d.photo_url||""; name.innerText=d.full_name||"";
 title.innerText=d.title||""; company.innerText=d.company||"";
 
 /* ABOUT */
-about.innerText=d.about||""; if(!d.about) aboutBox.classList.add("hide");
+about.innerText=d.about||"";
+if(!d.about) aboutBox.classList.add("hide");
 
 /* CONTACT */
 fullName.innerText=d.full_name||"";
@@ -212,7 +206,7 @@ hoursList.innerHTML+=`<li><span>${day}</span><span>${d["hours_"+day]}</span></li
 if(d.map_iframe) mapBox.innerHTML=d.map_iframe;
 else mapBox.classList.add("hide");
 
-/* ICONS */
+/* QUICK ICONS */
 callBtn.href=d.phone?"tel:"+d.phone:"#";
 whatsappBtn.href=d.whatsapp?"https://wa.me/"+d.whatsapp.replace(/\D/g,""):"#";
 instagramBtn.href=d.instagram||"#";
@@ -220,10 +214,10 @@ facebookBtn.href=d.facebook||"#";
 
 /* LINKS */
 links.innerHTML="";
-if(d.instagram) links.innerHTML+=item("Instagram",d.instagram,"fa-instagram ig");
-if(d.facebook) links.innerHTML+=item("Facebook",d.facebook,"fa-facebook-f fb");
-if(d.linkedin) links.innerHTML+=item("LinkedIn",d.linkedin,"fa-linkedin-in li");
-if(d.website) links.innerHTML+=item("Website",d.website,"fa-globe web");
+addLink("Instagram",d.instagram,"fa-instagram ig");
+addLink("Facebook",d.facebook,"fa-facebook-f fb");
+addLink("LinkedIn",d.linkedin,"fa-linkedin-in li");
+addLink("Website",d.website,"fa-globe web");
 if(!links.innerHTML) linksBox.classList.add("hide");
 
 /* GALLERY */
@@ -238,10 +232,12 @@ if(d.video_url) videoFrame.src=d.video_url;
 else videoBox.classList.add("hide");
 });
 
-function item(label,url,icon){
-return `<a href="${url}" target="_blank">
+function addLink(label,url,icon){
+if(!url) return;
+links.innerHTML+=`<a href="${url}" target="_blank">
 <span class="icon ${icon.split(" ")[1]}">
-<i class="fa-brands ${icon.split(" ")[0]}"></i></span>${label}</a>`;
+<i class="fa-brands ${icon.split(" ")[0]}"></i>
+</span>${label}</a>`;
 }
 
 function saveContact(){
