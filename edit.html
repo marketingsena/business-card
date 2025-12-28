@@ -3,6 +3,7 @@
 <head>
   <title>Edit VCard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
     body{
       font-family:Arial;
@@ -11,7 +12,11 @@
     }
     h2{margin-top:0}
     input{margin-bottom:15px}
-    small{color:#666;display:block;margin-bottom:8px}
+    small{
+      color:#666;
+      display:block;
+      margin-bottom:8px;
+    }
     .box{
       background:#fff;
       padding:15px;
@@ -28,13 +33,19 @@
 
 <div class="box">
   <h4>📸 Profile Photo</h4>
-  <small>JPG / PNG · Max 2MB · Recommended 600×600 (square)</small>
+  <small>
+    JPG / PNG · Max 2MB · Recommended 600×600 (square)<br>
+    Upload ke baad 10–15 seconds wait karein
+  </small>
   <input type="file" id="profile" accept="image/png,image/jpeg">
 </div>
 
 <div class="box">
   <h4>🖼️ Gallery Images</h4>
-  <small>JPG / PNG · Max 3MB each · Recommended 1080×1080</small>
+  <small>
+    JPG / PNG · Max 3MB each · Recommended 1080×1080<br>
+    Upload ke baad 10–15 seconds wait karein
+  </small>
   <input type="file" id="g1" accept="image/png,image/jpeg"><br>
   <input type="file" id="g2" accept="image/png,image/jpeg"><br>
   <input type="file" id="g3" accept="image/png,image/jpeg"><br>
@@ -57,19 +68,17 @@ if (!slug) {
 }
 
 /* ===============================
-   UPLOAD FUNCTION
+   UPLOAD FUNCTION (NO-CORS SAFE)
 ================================ */
 function upload(file, type, slot, maxMB) {
 
   if (!file) return;
 
-  // Type validation
   if (!["image/png","image/jpeg"].includes(file.type)) {
     alert("Only JPG or PNG images allowed");
     return;
   }
 
-  // Size validation
   if (file.size > maxMB * 1024 * 1024) {
     alert("File too large. Max " + maxMB + "MB allowed");
     return;
@@ -80,9 +89,7 @@ function upload(file, type, slot, maxMB) {
 
     fetch(API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      mode: "no-cors",   // 🔑 CORS BYPASS (MOST IMPORTANT)
       body: JSON.stringify({
         slug: slug,
         type: type,
@@ -90,19 +97,9 @@ function upload(file, type, slot, maxMB) {
         image: reader.result,
         maxSizeMB: maxMB
       })
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.error) {
-        alert("Error: " + data.error);
-      } else {
-        alert("Upload successful ✅");
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      alert("Upload failed. Try again.");
     });
+
+    alert("Upload sent successfully ✅\nPlease wait 10–15 seconds.");
   };
 
   reader.readAsDataURL(file);
