@@ -167,99 +167,135 @@
 </div>
 
 <script>
-let DATA=null;
+let DATA = null;
 
-/* 🔴 PASTE YOUR WEB APP URL HERE */
-const API_URL="https://script.google.com/macros/s/AKfycbyO8PAuVdabQp2zSlhdWWA2btLpo7XMfbAGQqb1zqCbfvFPDyNQsTyxTDPyBl4tlPyTAw/exec";
+/* 🔴 YOUR WEB APP URL */
+const API_URL = "https://script.google.com/macros/s/AKfycbyO8PAuVdabQp2zSlhdWWA2btLpo7XMfbAGQqb1zqCbfvFPDyNQsTyxTDPyBl4tlPyTAw/exec";
 
-/* 🔑 SLUG FROM CLEAN URL */
-const params = new URLSearchParams(location.search);
+/* 🔑 GET SLUG FROM URL (?slug=marketingsena) */
+const params = new URLSearchParams(window.location.search);
 const slug = params.get("slug");
 
 if (!slug) {
   document.body.innerHTML = "<h2>Invalid VCard URL</h2>";
 }
 
-
-/* FETCH DATA */
+/* 🚀 FETCH DATA */
 fetch(API_URL + "?slug=" + slug)
+  .then(res => res.json())
+  .then(d => {
 
+    console.log("API DATA:", d);
 
-/* HERO */
-photo.src=d.photo_url||""; name.innerText=d.full_name||"";
-title.innerText=d.title||""; company.innerText=d.company||"";
+    if (d.error) {
+      document.body.innerHTML = "<h2>" + d.error + "</h2>";
+      return;
+    }
 
-/* ABOUT */
-about.innerText=d.about||"";
-if(!d.about) aboutBox.classList.add("hide");
+    DATA = d;
 
-/* CONTACT */
-fullName.innerText=d.full_name||"";
-address.innerText=d.address||"";
-whatsappText.innerText=d.whatsapp||"";
+    /* HERO */
+    photo.src = d.photo_url || "";
+    name.innerText = d.full_name || "";
+    title.innerText = d.title || "";
+    company.innerText = d.company || "";
 
-/* HOURS */
-hoursList.innerHTML="";
-["sunday","monday","tuesday","wednesday","thursday","friday","saturday"]
-.forEach(day=>{
-if(d["hours_"+day])
-hoursList.innerHTML+=`<li><span>${day}</span><span>${d["hours_"+day]}</span></li>`;
-});
+    /* ABOUT */
+    about.innerText = d.about || "";
+    if (!d.about) aboutBox.classList.add("hide");
 
-/* MAP */
-if(d.map_iframe) mapBox.innerHTML=d.map_iframe;
-else mapBox.classList.add("hide");
+    /* CONTACT */
+    fullName.innerText = d.full_name || "";
+    address.innerText = d.address || "";
+    whatsappText.innerText = d.whatsapp || "";
 
-/* QUICK ICONS */
-callBtn.href=d.phone?"tel:"+d.phone:"#";
-whatsappBtn.href=d.whatsapp?"https://wa.me/"+d.whatsapp.replace(/\D/g,""):"#";
-instagramBtn.href=d.instagram||"#";
-facebookBtn.href=d.facebook||"#";
+    /* HOURS */
+    hoursList.innerHTML = "";
+    ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"]
+      .forEach(day => {
+        if (d["hours_" + day]) {
+          hoursList.innerHTML += `
+            <li>
+              <span>${day}</span>
+              <span>${d["hours_" + day]}</span>
+            </li>`;
+        }
+      });
 
-/* LINKS */
-links.innerHTML="";
-addLink("Instagram",d.instagram,"fa-instagram ig");
-addLink("Facebook",d.facebook,"fa-facebook-f fb");
-addLink("LinkedIn",d.linkedin,"fa-linkedin-in li");
-addLink("Website",d.website,"fa-globe web");
-if(!links.innerHTML) linksBox.classList.add("hide");
+    /* MAP */
+    if (d.map_iframe) {
+      mapBox.innerHTML = d.map_iframe;
+    } else {
+      mapBox.classList.add("hide");
+    }
 
-/* GALLERY */
-gallery.innerHTML="";
-["gallery_1","gallery_2","gallery_3","gallery_4"].forEach(k=>{
-if(d[k]) gallery.innerHTML+=`<img src="${d[k]}">`;
-});
-if(!gallery.innerHTML) galleryBox.classList.add("hide");
+    /* QUICK ICONS */
+    callBtn.href = d.phone ? "tel:" + d.phone : "#";
+    whatsappBtn.href = d.whatsapp ? "https://wa.me/" + d.whatsapp.replace(/\D/g,"") : "#";
+    instagramBtn.href = d.instagram || "#";
+    facebookBtn.href = d.facebook || "#";
 
-/* VIDEO */
-if(d.video_url) videoFrame.src=d.video_url;
-else videoBox.classList.add("hide");
-});
+    /* LINKS */
+    links.innerHTML = "";
+    addLink("Instagram", d.instagram, "fa-instagram ig");
+    addLink("Facebook", d.facebook, "fa-facebook-f fb");
+    addLink("LinkedIn", d.linkedin, "fa-linkedin-in li");
+    addLink("Website", d.website, "fa-globe web");
+    if (!links.innerHTML) linksBox.classList.add("hide");
 
-function addLink(label,url,icon){
-if(!url) return;
-links.innerHTML+=`<a href="${url}" target="_blank">
-<span class="icon ${icon.split(" ")[1]}">
-<i class="fa-brands ${icon.split(" ")[0]}"></i>
-</span>${label}</a>`;
+    /* GALLERY */
+    gallery.innerHTML = "";
+    ["gallery_1","gallery_2","gallery_3","gallery_4"].forEach(k => {
+      if (d[k]) gallery.innerHTML += `<img src="${d[k]}">`;
+    });
+    if (!gallery.innerHTML) galleryBox.classList.add("hide");
+
+    /* VIDEO */
+    if (d.video_url) {
+      videoFrame.src = d.video_url;
+    } else {
+      videoBox.classList.add("hide");
+    }
+
+  })
+  .catch(err => {
+    console.error("FETCH ERROR:", err);
+    document.body.innerHTML = "<h2>API Error</h2>";
+  });
+
+/* LINK BUILDER */
+function addLink(label, url, icon) {
+  if (!url) return;
+  links.innerHTML += `
+    <a href="${url}" target="_blank">
+      <span class="icon ${icon.split(" ")[1]}">
+        <i class="fa-brands ${icon.split(" ")[0]}"></i>
+      </span>
+      ${label}
+    </a>`;
 }
 
-function saveContact(){
-const v=`BEGIN:VCARD
+/* ADD TO CONTACT */
+function saveContact() {
+  if (!DATA) return;
+
+  const vcf = `BEGIN:VCARD
 VERSION:3.0
-FN:${DATA.full_name||""}
-ORG:${DATA.company||""}
-TITLE:${DATA.title||""}
-TEL:${DATA.phone||""}
-EMAIL:${DATA.email||""}
-ADR:${DATA.address||""}
+FN:${DATA.full_name || ""}
+ORG:${DATA.company || ""}
+TITLE:${DATA.title || ""}
+TEL:${DATA.phone || ""}
+EMAIL:${DATA.email || ""}
+ADR:${DATA.address || ""}
 END:VCARD`;
-const a=document.createElement("a");
-a.href=URL.createObjectURL(new Blob([v],{type:"text/vcard"}));
-a.download=(DATA.full_name||"contact")+".vcf";
-a.click();
+
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([vcf], { type: "text/vcard" }));
+  a.download = (DATA.full_name || "contact") + ".vcf";
+  a.click();
 }
 </script>
+
 
 </body>
 </html>
