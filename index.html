@@ -248,23 +248,172 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 </div>
 
 <script>
+/* ===============================
+   GLOBAL DATA HOLDER
+================================ */
+let VCARD_DATA = null;
+
+/* ===============================
+   CONFIG
+================================ */
+const API_URL = "https://script.google.com/macros/s/AKfycbx2KbdEUTvLlF1FNygSi6Ft-D1D_kjXZ64VQ9i7Ybi8s4lbbDv6bpuqURxj4xW85ktj5A/exec";
+
+/* ===============================
+   GET CLIENT ID FROM URL
+================================ */
+const params = new URLSearchParams(window.location.search);
+const clientId = params.get("id");
+
+if (!clientId) {
+  alert("Client ID missing in URL. Example: ?id=101");
+}
+
+/* ===============================
+   FETCH DATA FROM GOOGLE SHEET
+================================ */
+fetch(API_URL + "?id=" + clientId)
+  .then(res => res.json())
+  .then(data => {
+    if (data.error) {
+      alert(data.error);
+      return;
+    }
+
+    VCARD_DATA = data;
+
+    /* ===== HERO ===== */
+    document.querySelector(".hero img").src = data.photo_url || "";
+    document.querySelector(".hero h2").innerText = data.full_name || "";
+    document.querySelector(".hero p:nth-of-type(1)").innerText = data.title || "";
+    document.querySelector(".hero p:nth-of-type(2)").innerText = data.company || "";
+
+    /* ===== ABOUT ===== */
+    document.getElementById("about").innerText = data.about || "";
+
+    /* ===== CONTACT ===== */
+    document.getElementById("fullName").innerText = data.full_name || "";
+    document.getElementById("address").innerText = data.address || "";
+    document.getElementById("whatsappText").innerText = data.whatsapp || "";
+
+    /* ===== QUICK ICONS ===== */
+    document.getElementById("callBtn").href =
+      data.phone ? "tel:" + data.phone : "#";
+
+    document.getElementById("whatsappBtn").href =
+      data.whatsapp ? "https://wa.me/" + data.whatsapp.replace(/\D/g,"") : "#";
+
+    document.getElementById("instagramBtn").href = data.instagram || "#";
+    document.getElementById("facebookBtn").href = data.facebook || "#";
+
+    /* ===== HOURS OF OPERATION ===== */
+    const hoursList = document.getElementById("hoursList");
+    hoursList.innerHTML = "";
+
+    const hours = {
+      Sunday: data.hours_sunday,
+      Monday: data.hours_monday,
+      Tuesday: data.hours_tuesday,
+      Wednesday: data.hours_wednesday,
+      Thursday: data.hours_thursday,
+      Friday: data.hours_friday,
+      Saturday: data.hours_saturday
+    };
+
+    for (let day in hours) {
+      hoursList.innerHTML += `
+        <li>
+          <span>${day}</span>
+          <span>${hours[day] || ""}</span>
+        </li>`;
+    }
+
+    /* ===== MAP ===== */
+    if (data.map_iframe) {
+      document.getElementById("mapBox").innerHTML = data.map_iframe;
+    }
+
+    /* ===== LINKS ===== */
+    const linksDiv = document.querySelector(".links");
+    linksDiv.innerHTML = "";
+
+    if (data.whatsapp)
+      linksDiv.innerHTML += linkItem("WhatsApp", "https://wa.me/" + data.whatsapp.replace(/\D/g,""), "fa-whatsapp", "wa");
+
+    if (data.instagram)
+      linksDiv.innerHTML += linkItem("Instagram", data.instagram, "fa-instagram", "ig");
+
+    if (data.facebook)
+      linksDiv.innerHTML += linkItem("Facebook", data.facebook, "fa-facebook-f", "fb");
+
+    if (data.linkedin)
+      linksDiv.innerHTML += linkItem("LinkedIn", data.linkedin, "fa-linkedin-in", "li");
+
+    if (data.website)
+      linksDiv.innerHTML += linkItem("Website", data.website, "fa-globe", "web");
+
+    if (data.custom1_url)
+      linksDiv.innerHTML += linkItem(data.custom1_label || "Link", data.custom1_url, "fa-link", "custom");
+
+    if (data.custom2_url)
+      linksDiv.innerHTML += linkItem(data.custom2_label || "Link", data.custom2_url, "fa-link", "custom");
+
+    /* ===== GALLERY ===== */
+    const gallery = document.querySelector(".gallery");
+    gallery.innerHTML = "";
+
+    ["gallery_1","gallery_2","gallery_3","gallery_4"].forEach(key => {
+      if (data[key]) {
+        gallery.innerHTML += `<img src="${data[key]}">`;
+      }
+    });
+
+    /* ===== VIDEO ===== */
+    if (data.video_url) {
+      document.getElementById("videoFrame").src = data.video_url;
+    }
+  });
+
+/* ===============================
+   LINK ITEM HELPER
+================================ */
+function linkItem(label, url, icon, color){
+  return `
+    <a href="${url}" target="_blank">
+      <span class="icon ${color}">
+        <i class="fa-brands ${icon}"></i>
+      </span>
+      ${label}
+    </a>`;
+}
+
+/* ===============================
+   ADD TO CONTACT (VCF)
+================================ */
 function saveContact(){
-  const vcf=`BEGIN:VCARD
+
+  if (!VCARD_DATA) {
+    alert("Contact data not loaded yet");
+    return;
+  }
+
+  const vcf = `BEGIN:VCARD
 VERSION:3.0
-FN:Leslie Murphy
-ORG:AceFinance
-TITLE:Financial Manager
-TEL:+1234567890
-ADR:New York, USA
+FN:${VCARD_DATA.full_name || ""}
+ORG:${VCARD_DATA.company || ""}
+TITLE:${VCARD_DATA.title || ""}
+TEL:${VCARD_DATA.phone || ""}
+EMAIL:${VCARD_DATA.email || ""}
+ADR:${VCARD_DATA.address || ""}
 END:VCARD`;
 
-  const blob=new Blob([vcf],{type:"text/vcard"});
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(blob);
-  a.download="Leslie_Murphy.vcf";
+  const blob = new Blob([vcf], { type: "text/vcard" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = (VCARD_DATA.full_name || "contact").replace(/\s+/g,"_") + ".vcf";
   a.click();
 }
 </script>
+
 
 </body>
 </html>
