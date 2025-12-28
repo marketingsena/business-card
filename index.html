@@ -167,28 +167,32 @@
 </div>
 
 <script>
+/* ===============================
+   GLOBAL DATA
+================================ */
 let DATA = null;
 
-/* 🔴 YOUR WEB APP URL */
+/* 🔴 PASTE YOUR REAL WEB APP URL */
 const API_URL = "https://script.google.com/macros/s/AKfycbyO8PAuVdabQp2zSlhdWWA2btLpo7XMfbAGQqb1zqCbfvFPDyNQsTyxTDPyBl4tlPyTAw/exec";
 
-/* 🔑 GET SLUG FROM URL (?slug=marketingsena) */
+/* ===============================
+   GET SLUG (FROM ?slug=...)
+   (404.html clean URL ke saath kaam karega)
+================================ */
 const params = new URLSearchParams(window.location.search);
 const slug = params.get("slug");
-  if (slug) {
-  history.replaceState(null, "", "/business-card/" + slug);
-}
 
 if (!slug) {
   document.body.innerHTML = "<h2>Invalid VCard URL</h2>";
+  throw new Error("Slug missing");
 }
 
-/* 🚀 FETCH DATA */
+/* ===============================
+   FETCH DATA
+================================ */
 fetch(API_URL + "?slug=" + slug)
   .then(res => res.json())
   .then(d => {
-
-    console.log("API DATA:", d);
 
     if (d.error) {
       document.body.innerHTML = "<h2>" + d.error + "</h2>";
@@ -197,22 +201,48 @@ fetch(API_URL + "?slug=" + slug)
 
     DATA = d;
 
-    /* HERO */
-    photo.src = d.photo_url || "";
+    /* ========= HERO ========= */
+    if (d.photo_url) {
+      photo.src = d.photo_url;
+    } else {
+      photo.classList.add("hide");
+    }
+
     name.innerText = d.full_name || "";
     title.innerText = d.title || "";
     company.innerText = d.company || "";
 
-    /* ABOUT */
-    about.innerText = d.about || "";
-    if (!d.about) aboutBox.classList.add("hide");
+    /* ========= ABOUT ========= */
+    if (d.about) {
+      about.innerText = d.about;
+    } else {
+      aboutBox.classList.add("hide");
+    }
 
-    /* CONTACT */
-    fullName.innerText = d.full_name || "";
-    address.innerText = d.address || "";
-    whatsappText.innerText = d.whatsapp || "";
+    /* ========= CONTACT FIELDS ========= */
 
-    /* HOURS */
+    // NAME
+    if (d.full_name) {
+      fullName.innerText = d.full_name;
+    } else {
+      fullName.parentElement.classList.add("hide");
+    }
+
+    // ADDRESS
+    if (d.address) {
+      address.innerText = d.address;
+    } else {
+      address.parentElement.classList.add("hide");
+    }
+
+    // WHATSAPP TEXT
+    if (d.whatsapp) {
+      whatsappText.innerText = d.whatsapp;
+    } else {
+      whatsappText.parentElement.classList.add("hide");
+    }
+
+    /* ========= HOURS ========= */
     hoursList.innerHTML = "";
     ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"]
       .forEach(day => {
@@ -225,48 +255,67 @@ fetch(API_URL + "?slug=" + slug)
         }
       });
 
-    /* MAP */
+    // Agar poora week blank
+    if (!hoursList.innerHTML.trim()) {
+      hoursList.parentElement.classList.add("hide");
+    }
+
+    /* ========= MAP ========= */
     if (d.map_iframe) {
       mapBox.innerHTML = d.map_iframe;
     } else {
       mapBox.classList.add("hide");
     }
 
-    /* QUICK ICONS */
+    /* ========= QUICK ICONS ========= */
     callBtn.href = d.phone ? "tel:" + d.phone : "#";
-    whatsappBtn.href = d.whatsapp ? "https://wa.me/" + d.whatsapp.replace(/\D/g,"") : "#";
+    whatsappBtn.href = d.whatsapp
+      ? "https://wa.me/" + d.whatsapp.replace(/\D/g, "")
+      : "#";
     instagramBtn.href = d.instagram || "#";
     facebookBtn.href = d.facebook || "#";
 
-    /* LINKS */
+    /* ========= LINKS ========= */
     links.innerHTML = "";
     addLink("Instagram", d.instagram, "fa-instagram ig");
     addLink("Facebook", d.facebook, "fa-facebook-f fb");
     addLink("LinkedIn", d.linkedin, "fa-linkedin-in li");
     addLink("Website", d.website, "fa-globe web");
-    if (!links.innerHTML) linksBox.classList.add("hide");
 
-    /* GALLERY */
+    if (!links.innerHTML.trim()) {
+      linksBox.classList.add("hide");
+    }
+
+    /* ========= GALLERY ========= */
     gallery.innerHTML = "";
     ["gallery_1","gallery_2","gallery_3","gallery_4"].forEach(k => {
-      if (d[k]) gallery.innerHTML += `<img src="${d[k]}">`;
+      if (d[k]) {
+        gallery.innerHTML += `<img src="${d[k]}">`;
+      }
     });
-    if (!gallery.innerHTML) galleryBox.classList.add("hide");
 
-    /* VIDEO */
+    if (!gallery.innerHTML.trim()) {
+      galleryBox.classList.add("hide");
+    }
+
+    /* ========= VIDEO ========= */
     if (d.video_url) {
       videoFrame.src = d.video_url;
     } else {
       videoBox.classList.add("hide");
     }
 
+    /* ========= CLEAN URL (HIDE ?slug=) ========= */
+    history.replaceState(null, "", "/business-card/" + slug);
   })
   .catch(err => {
-    console.error("FETCH ERROR:", err);
+    console.error(err);
     document.body.innerHTML = "<h2>API Error</h2>";
   });
 
-/* LINK BUILDER */
+/* ===============================
+   LINK BUILDER
+================================ */
 function addLink(label, url, icon) {
   if (!url) return;
   links.innerHTML += `
@@ -278,7 +327,9 @@ function addLink(label, url, icon) {
     </a>`;
 }
 
-/* ADD TO CONTACT */
+/* ===============================
+   ADD TO CONTACT (VCF)
+================================ */
 function saveContact() {
   if (!DATA) return;
 
@@ -298,6 +349,7 @@ END:VCARD`;
   a.click();
 }
 </script>
+
 
 
 </body>
