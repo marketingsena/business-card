@@ -36,6 +36,8 @@
       border:4px solid #fff;
       object-fit:cover;
     }
+    .hero h2{margin:10px 0 5px}
+    .hero p{margin:2px;font-size:14px;opacity:.9}
 
     /* QUICK ICONS */
     .icon-actions{
@@ -62,7 +64,7 @@
       box-shadow:0 4px 10px rgba(0,0,0,.08)
     }
 
-    /* GALLERY */
+    /* GALLERY (BIGGER) */
     .gallery{
       display:grid;
       grid-template-columns:repeat(2,1fr);
@@ -87,7 +89,6 @@
       align-items:center;
       justify-content:center;
       z-index:9999;
-      overflow:hidden;
       touch-action:none;
     }
     #lightbox img{
@@ -99,7 +100,7 @@
       position:absolute;
       top:50%;
       transform:translateY(-50%);
-      font-size:30px;
+      font-size:32px;
       color:#fff;
       padding:10px;
       cursor:pointer;
@@ -109,12 +110,15 @@
     .next{right:10px}
     .close{
       position:absolute;
-      top:10px;
+      top:12px;
       right:15px;
       font-size:26px;
       color:#fff;
       cursor:pointer;
     }
+
+    iframe{width:100%;border-radius:15px;border:0}
+    .hide{display:none}
   </style>
 </head>
 
@@ -136,6 +140,13 @@
 </div>
 
 <div class="card">
+  <button onclick="saveContact()" style="width:100%;padding:12px;border:0;
+  border-radius:12px;background:#5b8cff;color:#fff;font-size:16px">
+    ➕ Add to Contacts
+  </button>
+</div>
+
+<div class="card" id="galleryBox">
   <h3>Gallery</h3>
   <div class="gallery" id="gallery"></div>
 </div>
@@ -144,83 +155,81 @@
 
 <!-- LIGHTBOX -->
 <div id="lightbox">
-  <span class="close" onclick="closeLightbox()">✕</span>
+  <span class="close" onclick="closeLB()">✕</span>
   <span class="nav prev" onclick="prevImg()">❮</span>
-  <img id="lightboxImg">
+  <img id="lbImg">
   <span class="nav next" onclick="nextImg()">❯</span>
 </div>
 
 <script>
 const API_URL="https://script.google.com/macros/s/AKfycbw9xyX1Zh388XgEiFu7ptEYbCBRvegAiwl6DbQqq2FAS1VWnI7DX4sI4pXCQ1quWpsftg/exec";
 const slug=new URLSearchParams(location.search).get("slug");
+if(!slug){document.body.innerHTML="Invalid URL";throw "";}
 
-let galleryImages=[], current=0, scale=1;
+let galleryImages=[],current=0,scale=1,startDist=0;
 
 fetch(API_URL+"?slug="+slug)
 .then(r=>r.json())
 .then(d=>{
  if(d.photo_url){
-   photo.src=d.photo_url;
-   photo.onerror=()=>photo.remove();
+  photo.src=d.photo_url;
+  photo.onerror=()=>photo.remove();
  }
  name.innerText=d.full_name||"";
  title.innerText=d.title||"";
  company.innerText=d.company||"";
 
  for(let i=1;i<=10;i++){
-   if(d["gallery_"+i]){
-     galleryImages.push(d["gallery_"+i]);
-     gallery.innerHTML+=`
-       <img src="${d["gallery_"+i]}"
-            onclick="openLightbox(${galleryImages.length-1})"
-            onerror="this.remove()">`;
-   }
+  if(d["gallery_"+i]){
+   galleryImages.push(d["gallery_"+i]);
+   gallery.innerHTML+=`
+    <img src="${d["gallery_"+i]}"
+     onclick="openLB(${galleryImages.length-1})"
+     onerror="this.remove()">`;
+  }
  }
+ if(!galleryImages.length) galleryBox.remove();
 });
 
-/* LIGHTBOX LOGIC */
+/* LIGHTBOX FUNCTIONS */
 const lb=document.getElementById("lightbox");
-const lbImg=document.getElementById("lightboxImg");
+const lbImg=document.getElementById("lbImg");
 
-function openLightbox(i){
+function openLB(i){
  current=i; scale=1;
  lbImg.src=galleryImages[i];
  lb.style.display="flex";
 }
-function closeLightbox(){
- lb.style.display="none";
-}
-function nextImg(){
- current=(current+1)%galleryImages.length;
- openLightbox(current);
-}
-function prevImg(){
- current=(current-1+galleryImages.length)%galleryImages.length;
- openLightbox(current);
-}
+function closeLB(){lb.style.display="none";}
+function nextImg(){openLB((current+1)%galleryImages.length);}
+function prevImg(){openLB((current-1+galleryImages.length)%galleryImages.length);}
 
 /* SWIPE */
 let startX=0;
-lb.addEventListener("touchstart",e=>startX=e.touches[0].clientX);
-lb.addEventListener("touchend",e=>{
- let diff=e.changedTouches[0].clientX-startX;
- if(diff>50) prevImg();
- if(diff<-50) nextImg();
-});
-
-/* PINCH ZOOM */
-let startDist=0;
-lb.addEventListener("touchmove",e=>{
- if(e.touches.length===2){
-   let dx=e.touches[0].clientX-e.touches[1].clientX;
-   let dy=e.touches[0].clientY-e.touches[1].clientY;
-   let dist=Math.sqrt(dx*dx+dy*dy);
-   if(startDist) scale*=dist/startDist;
-   lbImg.style.transform=`scale(${scale})`;
-   startDist=dist;
+lb.addEventListener("touchstart",e=>{
+ if(e.touches.length==1) startX=e.touches[0].clientX;
+ if(e.touches.length==2){
+  let dx=e.touches[0].clientX-e.touches[1].clientX;
+  let dy=e.touches[0].clientY-e.touches[1].clientY;
+  startDist=Math.sqrt(dx*dx+dy*dy);
  }
 });
-lb.addEventListener("touchend",()=>startDist=0);
+lb.addEventListener("touchend",e=>{
+ let dx=e.changedTouches[0].clientX-startX;
+ if(dx>60) prevImg();
+ if(dx<-60) nextImg();
+ startDist=0;
+});
+lb.addEventListener("touchmove",e=>{
+ if(e.touches.length==2){
+  let dx=e.touches[0].clientX-e.touches[1].clientX;
+  let dy=e.touches[0].clientY-e.touches[1].clientY;
+  let dist=Math.sqrt(dx*dx+dy*dy);
+  scale*=dist/startDist;
+  lbImg.style.transform=`scale(${scale})`;
+  startDist=dist;
+ }
+});
 </script>
 </body>
 </html>
