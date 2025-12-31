@@ -27,7 +27,7 @@
       background:#5b8cff;
       color:#fff;
       text-align:center;
-      padding:35px 20px 25px;
+      padding:30px 20px 25px;
     }
     .hero img{
       width:120px;
@@ -35,9 +35,20 @@
       border-radius:50%;
       border:4px solid #fff;
       object-fit:cover;
+      margin-bottom:10px;
     }
-    .hero h2{margin:10px 0 5px}
-    .hero p{margin:2px;font-size:14px;opacity:.9}
+    .hero h2{
+      margin:6px 0 4px;
+      font-size:22px;
+    }
+    .hero .title{
+      font-size:14px;
+      opacity:.95;
+    }
+    .hero .company{
+      font-size:13px;
+      opacity:.85;
+    }
 
     /* QUICK ICONS */
     .icon-actions{
@@ -64,7 +75,53 @@
       box-shadow:0 4px 10px rgba(0,0,0,.08)
     }
 
-    /* GALLERY (BIG THUMBNAILS) */
+    /* HOURS */
+    .hours{
+      list-style:none;
+      padding:0;
+      margin-top:10px;
+    }
+    .hours li{
+      display:flex;
+      justify-content:space-between;
+      padding:8px 0;
+      border-bottom:1px dashed #ddd;
+      font-size:14px;
+    }
+    .hours li span:first-child{
+      font-weight:600;
+      text-transform:capitalize;
+    }
+
+    /* LINKS */
+    .links a{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:12px;
+      background:#f2f5fb;
+      margin-bottom:10px;
+      border-radius:14px;
+      text-decoration:none;
+      color:#333;
+      font-size:15px;
+    }
+    .icon{
+      width:36px;
+      height:36px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-size:16px;
+    }
+    .ig{background:#e1306c}
+    .fb{background:#1877f2}
+    .li{background:#0077b5}
+    .web{background:#5b8cff}
+
+    /* GALLERY */
     .gallery{
       display:grid;
       grid-template-columns:repeat(2,1fr);
@@ -76,49 +133,9 @@
       border-radius:14px;
       object-fit:cover;
       cursor:pointer;
-      transition:transform .2s;
-    }
-    .gallery img:hover{transform:scale(1.03)}
-
-    /* LIGHTBOX */
-    #lightbox{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.9);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      z-index:9999;
-      touch-action:none;
-    }
-    #lightbox img{
-      max-width:90%;
-      max-height:90%;
-      transition:transform .2s;
-    }
-    .nav{
-      position:absolute;
-      top:50%;
-      transform:translateY(-50%);
-      font-size:32px;
-      color:#fff;
-      padding:10px;
-      cursor:pointer;
-      user-select:none;
-    }
-    .prev{left:10px}
-    .next{right:10px}
-    .close{
-      position:absolute;
-      top:12px;
-      right:15px;
-      font-size:26px;
-      color:#fff;
-      cursor:pointer;
     }
 
     iframe{width:100%;border-radius:15px;border:0}
-    .hide{display:none}
   </style>
 </head>
 
@@ -128,9 +145,9 @@
 <!-- HERO -->
 <div class="hero">
   <img id="photo">
-  <h2 id="name"></h2>     <!-- ✅ full_name sabse upar -->
-  <p id="title"></p>
-  <p id="company"></p>
+  <h2 id="full_name"></h2>
+  <div class="title" id="title"></div>
+  <div class="company" id="company"></div>
 </div>
 
 <!-- QUICK ICONS -->
@@ -141,8 +158,7 @@
   <a id="facebookBtn"><i class="fa-brands fa-facebook-f"></i></a>
 </div>
 
-<!-- SAVE CONTACT -->
-<div class="card">
+  <div class="card">
   <button onclick="saveContact()" style="width:100%;padding:12px;border:0;
   border-radius:12px;background:#5b8cff;color:#fff;font-size:16px">
     ➕ Add to Contacts
@@ -158,16 +174,18 @@
 <!-- CONTACT -->
 <div class="card" id="contactBox">
   <p><b>Name:</b> <span id="fullName"></span></p>
-  <p><b>Address:</b> <span id="address"></span></p>
   <p><b>WhatsApp:</b> <span id="whatsappText"></span></p>
-  <h4>Hours</h4>
+  <p><b>Address:</b> <span id="address"></span></p>
+
+  <h4 style="margin-top:15px">Hours of Operation</h4>
   <ul class="hours" id="hoursList"></ul>
+
   <div id="mapBox"></div>
 </div>
 
 <!-- LINKS -->
 <div class="card" id="linksBox">
-  <h3>Links</h3>
+  <h3>Social Links</h3>
   <div class="links" id="links"></div>
 </div>
 
@@ -177,161 +195,45 @@
   <div class="gallery" id="gallery"></div>
 </div>
 
-<!-- VIDEO -->
-<div class="card" id="videoBox">
-  <h3>Video</h3>
-  <iframe id="videoFrame" height="200"></iframe>
-</div>
-
-</div>
-
-<!-- LIGHTBOX -->
-<div id="lightbox">
-  <span class="close" onclick="closeLB()">✕</span>
-  <span class="nav prev" onclick="prevImg()">❮</span>
-  <img id="lbImg">
-  <span class="nav next" onclick="nextImg()">❯</span>
 </div>
 
 <script>
-let DATA=null;
 const API_URL="https://script.google.com/macros/s/AKfycbw9xyX1Zh388XgEiFu7ptEYbCBRvegAiwl6DbQqq2FAS1VWnI7DX4sI4pXCQ1quWpsftg/exec";
 const slug=new URLSearchParams(location.search).get("slug");
-if(!slug){document.body.innerHTML="Invalid URL";throw "";}
-
-let galleryImages=[],current=0,scale=1,startDist=0,startX=0;
 
 fetch(API_URL+"?slug="+slug)
 .then(r=>r.json())
 .then(d=>{
- if(d.error){document.body.innerHTML=d.error;return;}
- DATA=d;
-
- if(d.photo_url){
-  photo.src=d.photo_url;
-  photo.onerror=()=>photo.remove();
- }else photo.remove();
-
+ photo.src=d.photo_url||"";
  name.innerText=d.full_name||"";
  title.innerText=d.title||"";
  company.innerText=d.company||"";
 
- if(d.about) about.innerText=d.about;
- else aboutBox.remove();
-
+ about.innerText=d.about||"";
  fullName.innerText=d.full_name||"";
  address.innerText=d.address||"";
  whatsappText.innerText=d.whatsapp||"";
 
- hoursList.innerHTML="";
- ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"]
- .forEach(day=>{
-  if(d["hours_"+day]){
-   hoursList.innerHTML+=`<li><span>${day}</span><span>${d["hours_"+day]}</span></li>`;
-  }
+ const days=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+ days.forEach(day=>{
+   const key="hours_"+day.toLowerCase();
+   if(d[key]){
+     hoursList.innerHTML+=`<li><span>${day}</span><span>${d[key]}</span></li>`;
+   }
  });
 
- if(d.map_iframe) mapBox.innerHTML=d.map_iframe;
- else mapBox.remove();
-
- callBtn.href=d.phone?"tel:"+d.phone:"#";
- whatsappBtn.href=d.whatsapp?"https://wa.me/"+d.whatsapp.replace(/\D/g,""):"#";
- instagramBtn.href=d.instagram||"#";
- facebookBtn.href=d.facebook||"#";
-
- links.innerHTML="";
- addLink("Instagram",d.instagram,"fa-instagram ig");
- addLink("Facebook",d.facebook,"fa-facebook-f fb");
- addLink("LinkedIn",d.linkedin,"fa-linkedin-in li");
- addLink("Website",d.website,"fa-globe web");
- if(!links.innerHTML.trim()) linksBox.remove();
-
- gallery.innerHTML="";
- for(let i=1;i<=10;i++){
-  if(d["gallery_"+i]){
-   galleryImages.push(d["gallery_"+i]);
-   gallery.innerHTML+=`
-    <img src="${d["gallery_"+i]}"
-     onclick="openLB(${galleryImages.length-1})"
-     onerror="this.remove()">`;
-  }
- }
- if(!galleryImages.length) galleryBox.remove();
-
- if(d.video_url) videoFrame.src=d.video_url;
- else videoBox.remove();
-
- history.replaceState(null,"","/business-card/"+slug);
+ if(d.instagram) links.innerHTML+=link("Instagram",d.instagram,"ig","fa-instagram");
+ if(d.facebook) links.innerHTML+=link("Facebook",d.facebook,"fb","fa-facebook-f");
+ if(d.linkedin) links.innerHTML+=link("LinkedIn",d.linkedin,"li","fa-linkedin-in");
+ if(d.website) links.innerHTML+=link("Website",d.website,"web","fa-globe");
 });
 
-/* LINKS */
-function addLink(label,url,icon){
- if(!url)return;
- links.innerHTML+=`
- <a href="${url}" target="_blank">
-  <span class="icon ${icon.split(" ")[1]}">
-   <i class="fa-brands ${icon.split(" ")[0]}"></i>
-  </span>${label}
+function link(label,url,color,icon){
+ return `<a href="${url}" target="_blank">
+   <span class="icon ${color}"><i class="fa-brands ${icon}"></i></span>${label}
  </a>`;
 }
-
-/* LIGHTBOX */
-const lb=document.getElementById("lightbox");
-const lbImg=document.getElementById("lbImg");
-
-function openLB(i){
- current=i; scale=1;
- lbImg.style.transform="scale(1)";
- lbImg.src=galleryImages[i];
- lb.style.display="flex";
-}
-function closeLB(){lb.style.display="none";}
-function nextImg(){openLB((current+1)%galleryImages.length);}
-function prevImg(){openLB((current-1+galleryImages.length)%galleryImages.length);}
-
-/* SWIPE + PINCH */
-lb.addEventListener("touchstart",e=>{
- if(e.touches.length===1) startX=e.touches[0].clientX;
- if(e.touches.length===2){
-  let dx=e.touches[0].clientX-e.touches[1].clientX;
-  let dy=e.touches[0].clientY-e.touches[1].clientY;
-  startDist=Math.sqrt(dx*dx+dy*dy);
- }
-});
-lb.addEventListener("touchend",e=>{
- let dx=e.changedTouches[0].clientX-startX;
- if(dx>60) prevImg();
- if(dx<-60) nextImg();
- startDist=0;
-});
-lb.addEventListener("touchmove",e=>{
- if(e.touches.length===2){
-  let dx=e.touches[0].clientX-e.touches[1].clientX;
-  let dy=e.touches[0].clientY-e.touches[1].clientY;
-  let dist=Math.sqrt(dx*dx+dy*dy);
-  scale*=dist/startDist;
-  lbImg.style.transform=`scale(${scale})`;
-  startDist=dist;
- }
-});
-
-/* SAVE CONTACT */
-function saveContact(){
- if(!DATA)return;
- const v=`BEGIN:VCARD
-VERSION:3.0
-FN:${DATA.full_name||""}
-ORG:${DATA.company||""}
-TITLE:${DATA.title||""}
-TEL:${DATA.phone||""}
-EMAIL:${DATA.email||""}
-ADR:${DATA.address||""}
-END:VCARD`;
- const a=document.createElement("a");
- a.href=URL.createObjectURL(new Blob([v],{type:"text/vcard"}));
- a.download=(DATA.full_name||"contact")+".vcf";
- a.click();
-}
 </script>
+
 </body>
 </html>
