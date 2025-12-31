@@ -144,7 +144,7 @@
 <!-- HERO -->
 <div class="hero">
   <img id="photo">
-  <h2 id="name"></h2>          <!-- ✅ HERO NAME -->
+  <h2 id="fullNameHero"></h2>       <!-- ✅ HERO NAME -->
   <div class="title" id="title"></div>
   <div class="company" id="company"></div>
 </div>
@@ -156,6 +156,14 @@
   <a id="instagramBtn"><i class="fa-brands fa-instagram"></i></a>
   <a id="facebookBtn"><i class="fa-brands fa-facebook-f"></i></a>
 </div>
+
+  <div class="card">
+  <button onclick="saveContact()" style="width:100%;padding:12px;border:0;
+  border-radius:12px;background:#5b8cff;color:#fff;font-size:16px">
+    ➕ Add to Contacts
+  </button>
+</div>
+
 
 <!-- ABOUT -->
 <div class="card" id="aboutBox">
@@ -203,7 +211,7 @@ fetch(API_URL+"?slug="+slug)
    photo.src=d.photo_url;
    photo.onerror=()=>photo.remove();
  }
- name.innerText = d.full_name || "";
+ document.getElementById("fullNameHero").innerText = d.full_name || "";
  title.innerText = d.title || "";
  company.innerText = d.company || "";
 
