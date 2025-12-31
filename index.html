@@ -247,6 +247,8 @@ fetch(API+"?slug="+slug).then(r=>r.json()).then(d=>{
  ["Saturday","hours_saturday"]].forEach(x=>{
   if(d[x[1]]) hoursList.innerHTML+=
    `<li><span>${x[0]}</span><span>${d[x[1]]}</span></li>`;
+  /* CLEAN URL – REMOVE ?slug= */
+history.replaceState(null, "", "/business-card/" + slug);
  });
 
  if(d.map_iframe) mapBox.innerHTML=d.map_iframe;
