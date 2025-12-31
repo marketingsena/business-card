@@ -22,68 +22,50 @@
       min-height:100vh;
     }
 
-  /* HERO */
-.hero{
-  background:#5b8cff;
-  color:#fff;
-  text-align:center;
-  padding:25px 20px 35px;   /* 👈 bottom padding zyada */
-}
-
-.hero img{
-  box-shadow:
-    0 0 0 4px #fff,
-    0 0 20px rgba(255,255,255,.6),
-    0 0 40px rgba(255,255,255,.35);
-  animation:profileGlow 3s ease-in-out infinite alternate;
-}
-
-@keyframes profileGlow{
-  from{box-shadow:0 0 15px rgba(255,255,255,.4)}
-  to{box-shadow:0 0 30px rgba(255,255,255,.8)}
-}
-
-
-/* FULL NAME */
-.hero h2{
-  margin:2px 0 6px;        /* 👈 name thoda upar */
-  font-size:24px;          /* 👈 bigger & bold feel */
-  font-weight:700;
-}
-
-    .verified{
-  font-size:16px;
-  margin-left:6px;
-  color:#00ffcc;
-}
-
-/* TITLE */
-.hero .title{
-  font-size:16px;          /* 👈 pehle 14 tha */
-  margin-top:4px;
-  margin-bottom:4px;       /* 👈 title–company gap */
-  opacity:0.95;
-}
-
-/* COMPANY */
-.hero .company{
-  font-size:15px;          /* 👈 pehle 13 tha */
-  margin-bottom:8px;       /* 👈 hero ka end clean */
-  opacity:0.9;
-}
-
+    /* HERO */
     .hero{
-  background:linear-gradient(120deg,#5b8cff,#6dd5ed,#5b8cff);
-  background-size:200% 200%;
-  animation:heroGradient 6s ease infinite;
-}
+      background:linear-gradient(120deg,#5b8cff,#6dd5ed,#5b8cff);
+      background-size:200% 200%;
+      animation:heroGradient 6s ease infinite;
+      color:#fff;
+      text-align:center;
+      padding:25px 20px 35px;
+    }
+    @keyframes heroGradient{
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+    }
 
-@keyframes heroGradient{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
-}
+    .hero img{
+      width:120px;
+      height:120px;
+      border-radius:50%;
+      object-fit:cover;
+      border:4px solid #fff;
+      margin-bottom:6px;
+      box-shadow:
+        0 0 0 4px #fff,
+        0 0 20px rgba(255,255,255,.6);
+    }
 
+    .hero-name{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      font-size:24px;
+      font-weight:700;
+      margin:4px 0 6px;
+    }
+
+    .verified-badge{
+      width:18px;
+      height:18px;
+    }
+
+    .title{font-size:16px;opacity:.95}
+    .company{font-size:15px;opacity:.9;margin-bottom:6px}
 
     /* QUICK ICONS */
     .icon-actions{
@@ -95,13 +77,12 @@
       justify-content:space-around;
       box-shadow:0 4px 10px rgba(0,0,0,.1)
     }
-    .icon-actions i{font-size:22px}
-    .icon-actions a:nth-child(1) i{color:#5b8cff}
-    .icon-actions a:nth-child(2) i{color:#25d366}
-    .icon-actions a:nth-child(3) i{color:#e1306c}
-    .icon-actions a:nth-child(4) i{color:#1877f2}
+    .icon-actions a{font-size:22px}
+    .icon-actions a:nth-child(1){color:#5b8cff}
+    .icon-actions a:nth-child(2){color:#25d366}
+    .icon-actions a:nth-child(3){color:#e1306c}
+    .icon-actions a:nth-child(4){color:#1877f2}
 
-    /* CARD */
     .card{
       background:#fff;
       margin:15px;
@@ -110,24 +91,35 @@
       box-shadow:0 4px 10px rgba(0,0,0,.08)
     }
 
-    /* HOURS */
-    .hours{
-      list-style:none;
-      padding:0;
-      margin-top:10px;
+    .gallery{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
     }
-    .hours li{
-      display:flex;
-      justify-content:space-between;
-      padding:8px 0;
-      border-bottom:1px dashed #ddd;
-      font-size:14px;
-    }
-    .hours li span:first-child{
-      font-weight:600;
+    .gallery img{
+      width:100%;
+      height:160px;
+      border-radius:14px;
+      object-fit:cover;
+      cursor:pointer;
     }
 
-    /* LINKS */
+    /* MODAL */
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.9);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:999;
+    }
+    .modal img{
+      max-width:95%;
+      max-height:95%;
+      border-radius:12px;
+    }
+
     .links a{
       display:flex;
       align-items:center;
@@ -138,36 +130,19 @@
       border-radius:14px;
       text-decoration:none;
       color:#333;
-      font-size:15px;
     }
     .icon{
-      width:36px;
-      height:36px;
+      width:36px;height:36px;
       border-radius:50%;
       display:flex;
       align-items:center;
       justify-content:center;
       color:#fff;
-      font-size:16px;
     }
     .ig{background:#e1306c}
     .fb{background:#1877f2}
     .li{background:#0077b5}
     .web{background:#5b8cff}
-
-    /* GALLERY */
-    .gallery{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:10px;
-    }
-    .gallery img{
-      width:100%;
-      height:150px;
-      border-radius:14px;
-      object-fit:cover;
-      cursor:pointer;
-    }
 
     iframe{width:100%;border-radius:15px;border:0}
   </style>
@@ -176,18 +151,17 @@
 <body>
 <div class="vcard">
 
-<!-- HERO -->
 <div class="hero">
   <img id="photo">
-  <h2 id="fullNameHero">
-  <span id="heroName"></span>
-  <span class="verified">✔️</span>
-</h2> <!-- ✅ HERO NAME -->
+  <div class="hero-name">
+    <span id="heroName"></span>
+    <img src="https://marketingsena.github.io/business-card/images/verified-badge.png"
+         class="verified-badge">
+  </div>
   <div class="title" id="title"></div>
   <div class="company" id="company"></div>
 </div>
 
-<!-- QUICK ICONS -->
 <div class="icon-actions">
   <a id="callBtn"><i class="fa-solid fa-phone"></i></a>
   <a id="whatsappBtn"><i class="fa-brands fa-whatsapp"></i></a>
@@ -195,39 +169,13 @@
   <a id="facebookBtn"><i class="fa-brands fa-facebook-f"></i></a>
 </div>
 
-  <div class="card">
-  <button onclick="saveContact()" style="width:100%;padding:12px;border:0;
-  border-radius:12px;background:#5b8cff;color:#fff;font-size:16px">
+<div class="card">
+  <button id="saveBtn" style="width:100%;padding:14px;border:0;border-radius:14px;
+  background:#5b8cff;color:#fff;font-size:16px">
     ➕ Add to Contacts
   </button>
 </div>
 
-
-<!-- ABOUT -->
-<div class="card" id="aboutBox">
-  <h3>About</h3>
-  <p id="about"></p>
-</div>
-
-<!-- CONTACT -->
-<div class="card" id="contactBox">
-  <p><b>Name:</b> <span id="fullName"></span></p>
-  <p><b>WhatsApp:</b> <span id="whatsappText"></span></p>
-  <p><b>Address:</b> <span id="address"></span></p>
-
-  <h4 style="margin-top:15px">Hours of Operation</h4>
-  <ul class="hours" id="hoursList"></ul>
-
-  <div id="mapBox"></div>
-</div>
-
-<!-- LINKS -->
-<div class="card" id="linksBox">
-  <h3>Social Links</h3>
-  <div class="links" id="links"></div>
-</div>
-
-<!-- GALLERY -->
 <div class="card" id="galleryBox">
   <h3>Gallery</h3>
   <div class="gallery" id="gallery"></div>
@@ -235,115 +183,55 @@
 
 </div>
 
+<div class="modal" id="imgModal" onclick="this.style.display='none'">
+  <img id="modalImg">
+</div>
+
 <script>
+let DATA=null;
 const API_URL="https://script.google.com/macros/s/AKfycbw9xyX1Zh388XgEiFu7ptEYbCBRvegAiwl6DbQqq2FAS1VWnI7DX4sI4pXCQ1quWpsftg/exec";
 const slug=new URLSearchParams(location.search).get("slug");
 
 fetch(API_URL+"?slug="+slug)
 .then(r=>r.json())
 .then(d=>{
- if(d.error){document.body.innerHTML=d.error;return;}
+  DATA=d;
 
- /* HERO */
- if(d.photo_url){
-   photo.src=d.photo_url;
-   photo.onerror=()=>photo.remove();
- }
- document.getElementById("heroName").innerText = d.full_name || "";
- title.innerText = d.title || "";
- company.innerText = d.company || "";
+  photo.src=d.photo_url;
+  heroName.innerText=d.full_name||"";
+  title.innerText=d.title||"";
+  company.innerText=d.company||"";
 
- /* ABOUT */
- if(d.about) about.innerText=d.about;
- else aboutBox.remove();
+  callBtn.href=d.phone?"tel:"+d.phone:"#";
+  whatsappBtn.href=d.whatsapp?"https://wa.me/"+d.whatsapp.replace(/\D/g,""):"#";
+  instagramBtn.href=d.instagram||"#";
+  facebookBtn.href=d.facebook||"#";
 
- /* CONTACT */
- fullName.innerText = d.full_name || "";
- address.innerText = d.address || "";
- whatsappText.innerText = d.whatsapp || "";
-
- /* HOURS */
- const days=[
-  ["Sunday","hours_sunday"],
-  ["Monday","hours_monday"],
-  ["Tuesday","hours_tuesday"],
-  ["Wednesday","hours_wednesday"],
-  ["Thursday","hours_thursday"],
-  ["Friday","hours_friday"],
-  ["Saturday","hours_saturday"]
- ];
- days.forEach(dy=>{
-  if(d[dy[1]]){
-    hoursList.innerHTML+=
-     `<li><span>${dy[0]}</span><span>${d[dy[1]]}</span></li>`;
+  for(let i=1;i<=10;i++){
+    if(d["gallery_"+i]){
+      const img=document.createElement("img");
+      img.src=d["gallery_"+i];
+      img.onclick=()=>{modalImg.src=img.src;imgModal.style.display="flex";}
+      gallery.appendChild(img);
+    }
   }
- });
-
- /* MAP */
- if(d.map_iframe){
-   mapBox.innerHTML=d.map_iframe;
- } else {
-   mapBox.remove();
- }
-
- /* LINKS */
- if(d.instagram) links.innerHTML+=link("Instagram",d.instagram,"ig","fa-instagram");
- if(d.facebook) links.innerHTML+=link("Facebook",d.facebook,"fb","fa-facebook-f");
- if(d.linkedin) links.innerHTML+=link("LinkedIn",d.linkedin,"li","fa-linkedin-in");
- if(d.website) links.innerHTML+=link("Website",d.website,"web","fa-globe");
- if(!links.innerHTML.trim()) linksBox.remove();
-
- /* GALLERY */
- for(let i=1;i<=10;i++){
-   if(d["gallery_"+i]){
-     gallery.innerHTML+=`<img src="${d["gallery_"+i]}" onerror="this.remove()">`;
-   }
- }
- if(!gallery.innerHTML.trim()) galleryBox.remove();
 });
 
-function link(label,url,color,icon){
- return `<a href="${url}" target="_blank">
-  <span class="icon ${color}"><i class="fa-brands ${icon}"></i></span>${label}
- </a>`;
-}
-</script>
-
-  <script>
-/* ===============================
-   SAVE CONTACT (100% WORKING)
-================================ */
-document.getElementById("saveBtn")?.addEventListener("click", function () {
-
-  if (!window.DATA) {
-    alert("Contact data not loaded yet");
-    return;
-  }
-
-  const vcf = `
-BEGIN:VCARD
+saveBtn.onclick=()=>{
+  if(!DATA)return;
+  const v=`BEGIN:VCARD
 VERSION:3.0
-FN:${DATA.full_name || ""}
-ORG:${DATA.company || ""}
-TITLE:${DATA.title || ""}
-TEL:${DATA.phone || ""}
-EMAIL:${DATA.email || ""}
-ADR:${DATA.address || ""}
-END:VCARD
-`.trim();
-
-  const blob = new Blob([vcf], { type: "text/vcard;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = (DATA.full_name || "contact").replace(/\s+/g,"_") + ".vcf";
-  document.body.appendChild(a);
+FN:${DATA.full_name||""}
+ORG:${DATA.company||""}
+TITLE:${DATA.title||""}
+TEL:${DATA.phone||""}
+END:VCARD`;
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([v],{type:"text/vcard"}));
+  a.download=(DATA.full_name||"contact")+".vcf";
   a.click();
-  document.body.removeChild(a);
-});
+};
 </script>
-
 
 </body>
 </html>
