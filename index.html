@@ -1,235 +1,238 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Digital VCard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digital VCard</title>
 
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet"
+ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-  <style>
-    body{
-      margin:0;
-      font-family:Arial, sans-serif;
-      background:#e9eef6;
-      display:flex;
-      justify-content:center;
-    }
-    .vcard{
-      width:100%;
-      max-width:420px;
-      background:#f2f5fb;
-      min-height:100vh;
-    }
+<style>
+body{
+ margin:0;font-family:Arial;background:#e9eef6;
+ display:flex;justify-content:center;
+}
+.vcard{max-width:420px;width:100%;background:#f2f5fb}
 
-    /* HERO */
-    .hero{
-      background:linear-gradient(120deg,#5b8cff,#6dd5ed,#5b8cff);
-      background-size:200% 200%;
-      animation:heroGradient 6s ease infinite;
-      color:#fff;
-      text-align:center;
-      padding:25px 20px 35px;
-    }
-    @keyframes heroGradient{
-      0%{background-position:0% 50%}
-      50%{background-position:100% 50%}
-      100%{background-position:0% 50%}
-    }
+/* HERO */
+.hero{
+ background:linear-gradient(120deg,#5b8cff,#6dd5ed,#5b8cff);
+ background-size:200% 200%;
+ animation:bg 6s infinite;
+ color:#fff;text-align:center;padding:25px
+}
+@keyframes bg{
+ 0%{background-position:0%}
+ 50%{background-position:100%}
+ 100%{background-position:0%}
+}
+.hero img{
+ width:120px;height:120px;border-radius:50%;
+ object-fit:cover;border:4px solid #fff;
+ box-shadow:0 0 20px rgba(255,255,255,.6)
+}
+.hero-name{
+ display:flex;justify-content:center;align-items:center;
+ gap:6px;font-size:24px;font-weight:700;margin-top:6px
+}
+.verified-badge{
+ width:14px;height:14px;object-fit:contain
+}
+.title{font-size:16px;opacity:.95}
+.company{font-size:15px;opacity:.9}
 
-    .hero img{
-      width:120px;
-      height:120px;
-      border-radius:50%;
-      object-fit:cover;
-      border:4px solid #fff;
-      margin-bottom:6px;
-      box-shadow:
-        0 0 0 4px #fff,
-        0 0 20px rgba(255,255,255,.6);
-    }
+/* QUICK ICONS */
+.icon-actions{
+ background:#fff;margin:-20px 15px 15px;
+ border-radius:20px;padding:15px;
+ display:flex;justify-content:space-around;
+ box-shadow:0 4px 10px rgba(0,0,0,.1)
+}
+.icon-actions a{font-size:22px}
+.icon-actions a:nth-child(1){color:#5b8cff}
+.icon-actions a:nth-child(2){color:#25d366}
+.icon-actions a:nth-child(3){color:#e1306c}
+.icon-actions a:nth-child(4){color:#1877f2}
 
-    .hero-name{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:6px;
-      font-size:24px;
-      font-weight:700;
-      margin:4px 0 6px;
-    }
+.card{
+ background:#fff;margin:15px;padding:18px;
+ border-radius:18px;
+ box-shadow:0 4px 10px rgba(0,0,0,.08)
+}
 
-    .verified-badge{
-      width:18px;
-      height:18px;
-    }
+/* HOURS */
+.hours{list-style:none;padding:0;margin-top:10px}
+.hours li{
+ display:flex;justify-content:space-between;
+ padding:8px 0;border-bottom:1px dashed #ddd;
+ font-size:14px
+}
+.hours li span:first-child{font-weight:600}
 
-    .title{font-size:16px;opacity:.95}
-    .company{font-size:15px;opacity:.9;margin-bottom:6px}
+/* LINKS */
+.links a{
+ display:flex;align-items:center;gap:12px;
+ padding:12px;background:#f2f5fb;
+ margin-bottom:10px;border-radius:14px;
+ text-decoration:none;color:#333
+}
+.icon{
+ width:36px;height:36px;border-radius:50%;
+ display:flex;align-items:center;justify-content:center;
+ color:#fff
+}
+.ig{background:#e1306c}
+.fb{background:#1877f2}
+.li{background:#0077b5}
+.web{background:#5b8cff}
 
-    /* QUICK ICONS */
-    .icon-actions{
-      background:#fff;
-      margin:-25px 15px 15px;
-      border-radius:20px;
-      padding:15px;
-      display:flex;
-      justify-content:space-around;
-      box-shadow:0 4px 10px rgba(0,0,0,.1)
-    }
-    .icon-actions a{font-size:22px}
-    .icon-actions a:nth-child(1){color:#5b8cff}
-    .icon-actions a:nth-child(2){color:#25d366}
-    .icon-actions a:nth-child(3){color:#e1306c}
-    .icon-actions a:nth-child(4){color:#1877f2}
+/* GALLERY */
+.gallery{
+ display:grid;grid-template-columns:repeat(2,1fr);
+ gap:10px
+}
+.gallery img{
+ width:100%;height:160px;
+ border-radius:14px;object-fit:cover;
+ cursor:pointer
+}
 
-    .card{
-      background:#fff;
-      margin:15px;
-      padding:18px;
-      border-radius:18px;
-      box-shadow:0 4px 10px rgba(0,0,0,.08)
-    }
+/* FULLSCREEN */
+.viewer{
+ position:fixed;inset:0;background:#000;
+ display:none;align-items:center;justify-content:center;
+ z-index:999
+}
+.viewer img{
+ max-width:100%;max-height:100%
+}
+.nav{
+ position:absolute;top:50%;
+ font-size:30px;color:#fff;
+ cursor:pointer;padding:10px
+}
+.prev{left:10px}
+.next{right:10px}
 
-    .gallery{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:10px;
-    }
-    .gallery img{
-      width:100%;
-      height:160px;
-      border-radius:14px;
-      object-fit:cover;
-      cursor:pointer;
-    }
-
-    /* MODAL */
-    .modal{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.9);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      z-index:999;
-    }
-    .modal img{
-      max-width:95%;
-      max-height:95%;
-      border-radius:12px;
-    }
-
-    .links a{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      padding:12px;
-      background:#f2f5fb;
-      margin-bottom:10px;
-      border-radius:14px;
-      text-decoration:none;
-      color:#333;
-    }
-    .icon{
-      width:36px;height:36px;
-      border-radius:50%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:#fff;
-    }
-    .ig{background:#e1306c}
-    .fb{background:#1877f2}
-    .li{background:#0077b5}
-    .web{background:#5b8cff}
-
-    iframe{width:100%;border-radius:15px;border:0}
-  </style>
+iframe{width:100%;border-radius:15px;border:0}
+</style>
 </head>
 
 <body>
 <div class="vcard">
 
 <div class="hero">
-  <img id="photo">
-  <div class="hero-name">
-    <span id="heroName"></span>
-    <img src="https://marketingsena.github.io/business-card/images/verified-badge.png"
-         class="verified-badge">
-  </div>
-  <div class="title" id="title"></div>
-  <div class="company" id="company"></div>
+ <img id="photo">
+ <div class="hero-name">
+  <span id="heroName"></span>
+  <img src="https://marketingsena.github.io/business-card/images/verified-badge.png"
+   class="verified-badge">
+ </div>
+ <div class="title" id="title"></div>
+ <div class="company" id="company"></div>
 </div>
 
 <div class="icon-actions">
-  <a id="callBtn"><i class="fa-solid fa-phone"></i></a>
-  <a id="whatsappBtn"><i class="fa-brands fa-whatsapp"></i></a>
-  <a id="instagramBtn"><i class="fa-brands fa-instagram"></i></a>
-  <a id="facebookBtn"><i class="fa-brands fa-facebook-f"></i></a>
+ <a id="callBtn"><i class="fa-solid fa-phone"></i></a>
+ <a id="whatsappBtn"><i class="fa-brands fa-whatsapp"></i></a>
+ <a id="instagramBtn"><i class="fa-brands fa-instagram"></i></a>
+ <a id="facebookBtn"><i class="fa-brands fa-facebook-f"></i></a>
 </div>
 
 <div class="card">
-  <button id="saveBtn" style="width:100%;padding:14px;border:0;border-radius:14px;
-  background:#5b8cff;color:#fff;font-size:16px">
-    ➕ Add to Contacts
-  </button>
+ <button id="saveBtn" style="width:100%;padding:14px;border:0;
+ border-radius:14px;background:#5b8cff;color:#fff;font-size:16px">
+ ➕ Add to Contacts
+ </button>
 </div>
 
-<div class="card" id="galleryBox">
-  <h3>Gallery</h3>
-  <div class="gallery" id="gallery"></div>
+<div class="card" id="contactBox">
+ <p><b>Name:</b> <span id="fullName"></span></p>
+ <p><b>Company:</b> <span id="company2"></span></p>
+
+ <h4>Hours of Operation</h4>
+ <ul class="hours" id="hoursList"></ul>
+
+ <p><b>Address:</b> <span id="address"></span></p>
+ <div id="mapBox"></div>
+</div>
+
+<div class="card">
+ <h3>Gallery</h3>
+ <div class="gallery" id="gallery"></div>
 </div>
 
 </div>
 
-<div class="modal" id="imgModal" onclick="this.style.display='none'">
-  <img id="modalImg">
+<div class="viewer" id="viewer">
+ <span class="nav prev" onclick="nav(-1)">❮</span>
+ <img id="viewImg">
+ <span class="nav next" onclick="nav(1)">❯</span>
 </div>
 
 <script>
-let DATA=null;
-const API_URL="https://script.google.com/macros/s/AKfycbw9xyX1Zh388XgEiFu7ptEYbCBRvegAiwl6DbQqq2FAS1VWnI7DX4sI4pXCQ1quWpsftg/exec";
+let DATA,imgs=[],idx=0;
+const API="https://script.google.com/macros/s/AKfycbw9xyX1Zh388XgEiFu7ptEYbCBRvegAiwl6DbQqq2FAS1VWnI7DX4sI4pXCQ1quWpsftg/exec";
 const slug=new URLSearchParams(location.search).get("slug");
 
-fetch(API_URL+"?slug="+slug)
-.then(r=>r.json())
-.then(d=>{
-  DATA=d;
+fetch(API+"?slug="+slug).then(r=>r.json()).then(d=>{
+ DATA=d;
+ photo.src=d.photo_url;
+ heroName.innerText=d.full_name;
+ title.innerText=d.title;
+ company.innerText=d.company;
 
-  photo.src=d.photo_url;
-  heroName.innerText=d.full_name||"";
-  title.innerText=d.title||"";
-  company.innerText=d.company||"";
+ fullName.innerText=d.full_name;
+ company2.innerText=d.company;
+ address.innerText=d.address;
 
-  callBtn.href=d.phone?"tel:"+d.phone:"#";
-  whatsappBtn.href=d.whatsapp?"https://wa.me/"+d.whatsapp.replace(/\D/g,""):"#";
-  instagramBtn.href=d.instagram||"#";
-  facebookBtn.href=d.facebook||"#";
+ [["Sunday","hours_sunday"],["Monday","hours_monday"],
+ ["Tuesday","hours_tuesday"],["Wednesday","hours_wednesday"],
+ ["Thursday","hours_thursday"],["Friday","hours_friday"],
+ ["Saturday","hours_saturday"]].forEach(x=>{
+  if(d[x[1]]) hoursList.innerHTML+=`<li><span>${x[0]}</span><span>${d[x[1]]}</span></li>`;
+ });
 
-  for(let i=1;i<=10;i++){
-    if(d["gallery_"+i]){
-      const img=document.createElement("img");
-      img.src=d["gallery_"+i];
-      img.onclick=()=>{modalImg.src=img.src;imgModal.style.display="flex";}
-      gallery.appendChild(img);
-    }
+ if(d.map_iframe) mapBox.innerHTML=d.map_iframe;
+
+ callBtn.href="tel:"+d.phone;
+ whatsappBtn.href="https://wa.me/"+d.whatsapp.replace(/\D/g,"");
+ instagramBtn.href=d.instagram;
+ facebookBtn.href=d.facebook;
+
+ for(let i=1;i<=10;i++){
+  if(d["gallery_"+i]){
+   const im=document.createElement("img");
+   im.src=d["gallery_"+i];
+   im.onclick=()=>openImg(im.src);
+   gallery.appendChild(im);
+   imgs.push(im.src);
   }
+ }
 });
 
+function openImg(src){
+ idx=imgs.indexOf(src);
+ viewImg.src=src;
+ viewer.style.display="flex";
+}
+function nav(n){
+ idx=(idx+n+imgs.length)%imgs.length;
+ viewImg.src=imgs[idx];
+}
+viewer.onclick=()=>viewer.style.display="none";
+
 saveBtn.onclick=()=>{
-  if(!DATA)return;
-  const v=`BEGIN:VCARD
+ const v=`BEGIN:VCARD
 VERSION:3.0
-FN:${DATA.full_name||""}
-ORG:${DATA.company||""}
-TITLE:${DATA.title||""}
-TEL:${DATA.phone||""}
+FN:${DATA.full_name}
+ORG:${DATA.company}
+TITLE:${DATA.title}
+TEL:${DATA.phone}
 END:VCARD`;
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(new Blob([v],{type:"text/vcard"}));
-  a.download=(DATA.full_name||"contact")+".vcf";
-  a.click();
+ const a=document.createElement("a");
+ a.href=URL.createObjectURL(new Blob([v],{type:"text/vcard"}));
+ a.download=DATA.full_name+".vcf";a.click();
 };
 </script>
 
