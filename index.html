@@ -31,13 +31,24 @@ body{
  object-fit:cover;border:4px solid #fff;
  box-shadow:0 0 20px rgba(255,255,255,.6)
 }
+
+/* NAME + BADGE */
 .hero-name{
- display:flex;justify-content:center;align-items:center;
- gap:6px;font-size:24px;font-weight:700;margin-top:6px
+ display:inline-flex;
+ align-items:center;
+ gap:6px;
+ font-size:24px;
+ font-weight:700;
+ margin-top:6px;
+ line-height:1.2;
 }
 .verified-badge{
- width:14px;height:14px;object-fit:contain
+ width:14px;
+ height:14px;
+ object-fit:contain;
+ margin-top:1px;
 }
+
 .title{font-size:16px;opacity:.95}
 .company{font-size:15px;opacity:.9}
 
@@ -69,7 +80,7 @@ body{
 }
 .hours li span:first-child{font-weight:600}
 
-/* LINKS */
+/* SOCIAL LINKS */
 .links a{
  display:flex;align-items:center;gap:12px;
  padding:12px;background:#f2f5fb;
@@ -97,19 +108,21 @@ body{
  cursor:pointer
 }
 
-/* FULLSCREEN */
+/* FULLSCREEN VIEWER */
 .viewer{
- position:fixed;inset:0;background:#000;
+ position:fixed;inset:0;background:rgba(0,0,0,.9);
  display:none;align-items:center;justify-content:center;
  z-index:999
 }
 .viewer img{
- max-width:100%;max-height:100%
+ max-width:95%;max-height:95%
 }
 .nav{
  position:absolute;top:50%;
- font-size:30px;color:#fff;
- cursor:pointer;padding:10px
+ transform:translateY(-50%);
+ font-size:32px;color:#fff;
+ cursor:pointer;padding:12px;
+ user-select:none
 }
 .prev{left:10px}
 .next{right:10px}
@@ -121,6 +134,7 @@ iframe{width:100%;border-radius:15px;border:0}
 <body>
 <div class="vcard">
 
+<!-- HERO -->
 <div class="hero">
  <img id="photo">
  <div class="hero-name">
@@ -132,6 +146,7 @@ iframe{width:100%;border-radius:15px;border:0}
  <div class="company" id="company"></div>
 </div>
 
+<!-- QUICK ICONS -->
 <div class="icon-actions">
  <a id="callBtn"><i class="fa-solid fa-phone"></i></a>
  <a id="whatsappBtn"><i class="fa-brands fa-whatsapp"></i></a>
@@ -139,6 +154,7 @@ iframe{width:100%;border-radius:15px;border:0}
  <a id="facebookBtn"><i class="fa-brands fa-facebook-f"></i></a>
 </div>
 
+<!-- ADD TO CONTACT -->
 <div class="card">
  <button id="saveBtn" style="width:100%;padding:14px;border:0;
  border-radius:14px;background:#5b8cff;color:#fff;font-size:16px">
@@ -146,7 +162,8 @@ iframe{width:100%;border-radius:15px;border:0}
  </button>
 </div>
 
-<div class="card" id="contactBox">
+<!-- CONTACT -->
+<div class="card">
  <p><b>Name:</b> <span id="fullName"></span></p>
  <p><b>Company:</b> <span id="company2"></span></p>
 
@@ -157,6 +174,13 @@ iframe{width:100%;border-radius:15px;border:0}
  <div id="mapBox"></div>
 </div>
 
+<!-- SOCIAL LINKS -->
+<div class="card" id="linksBox">
+ <h3>Social Links</h3>
+ <div class="links" id="links"></div>
+</div>
+
+<!-- GALLERY -->
 <div class="card">
  <h3>Gallery</h3>
  <div class="gallery" id="gallery"></div>
@@ -164,10 +188,11 @@ iframe{width:100%;border-radius:15px;border:0}
 
 </div>
 
+<!-- FULLSCREEN VIEWER -->
 <div class="viewer" id="viewer">
- <span class="nav prev" onclick="nav(-1)">❮</span>
+ <span class="nav prev" onclick="nav(-1,event)">❮</span>
  <img id="viewImg">
- <span class="nav next" onclick="nav(1)">❯</span>
+ <span class="nav next" onclick="nav(1,event)">❯</span>
 </div>
 
 <script>
@@ -177,28 +202,35 @@ const slug=new URLSearchParams(location.search).get("slug");
 
 fetch(API+"?slug="+slug).then(r=>r.json()).then(d=>{
  DATA=d;
- photo.src=d.photo_url;
- heroName.innerText=d.full_name;
- title.innerText=d.title;
- company.innerText=d.company;
+ photo.src=d.photo_url||"";
+ heroName.innerText=d.full_name||"";
+ title.innerText=d.title||"";
+ company.innerText=d.company||"";
 
- fullName.innerText=d.full_name;
- company2.innerText=d.company;
- address.innerText=d.address;
+ fullName.innerText=d.full_name||"";
+ company2.innerText=d.company||"";
+ address.innerText=d.address||"";
 
  [["Sunday","hours_sunday"],["Monday","hours_monday"],
  ["Tuesday","hours_tuesday"],["Wednesday","hours_wednesday"],
  ["Thursday","hours_thursday"],["Friday","hours_friday"],
  ["Saturday","hours_saturday"]].forEach(x=>{
-  if(d[x[1]]) hoursList.innerHTML+=`<li><span>${x[0]}</span><span>${d[x[1]]}</span></li>`;
+  if(d[x[1]]) hoursList.innerHTML+=
+   `<li><span>${x[0]}</span><span>${d[x[1]]}</span></li>`;
  });
 
  if(d.map_iframe) mapBox.innerHTML=d.map_iframe;
 
- callBtn.href="tel:"+d.phone;
- whatsappBtn.href="https://wa.me/"+d.whatsapp.replace(/\D/g,"");
- instagramBtn.href=d.instagram;
- facebookBtn.href=d.facebook;
+ callBtn.href=d.phone?"tel:"+d.phone:"#";
+ whatsappBtn.href=d.whatsapp?"https://wa.me/"+d.whatsapp.replace(/\D/g,""):"#";
+ instagramBtn.href=d.instagram||"#";
+ facebookBtn.href=d.facebook||"#";
+
+ if(d.instagram) links.innerHTML+=link("Instagram",d.instagram,"ig","fa-instagram");
+ if(d.facebook) links.innerHTML+=link("Facebook",d.facebook,"fb","fa-facebook-f");
+ if(d.linkedin) links.innerHTML+=link("LinkedIn",d.linkedin,"li","fa-linkedin-in");
+ if(d.website) links.innerHTML+=link("Website",d.website,"web","fa-globe");
+ if(!links.innerHTML.trim()) linksBox.remove();
 
  for(let i=1;i<=10;i++){
   if(d["gallery_"+i]){
@@ -216,7 +248,8 @@ function openImg(src){
  viewImg.src=src;
  viewer.style.display="flex";
 }
-function nav(n){
+function nav(n,e){
+ e.stopPropagation();
  idx=(idx+n+imgs.length)%imgs.length;
  viewImg.src=imgs[idx];
 }
@@ -232,8 +265,15 @@ TEL:${DATA.phone}
 END:VCARD`;
  const a=document.createElement("a");
  a.href=URL.createObjectURL(new Blob([v],{type:"text/vcard"}));
- a.download=DATA.full_name+".vcf";a.click();
+ a.download=DATA.full_name+".vcf";
+ a.click();
 };
+
+function link(label,url,color,icon){
+ return `<a href="${url}" target="_blank">
+  <span class="icon ${color}"><i class="fa-brands ${icon}"></i></span>${label}
+ </a>`;
+}
 </script>
 
 </body>
