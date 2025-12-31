@@ -90,7 +90,6 @@
     }
     .hours li span:first-child{
       font-weight:600;
-      text-transform:capitalize;
     }
 
     /* LINKS */
@@ -145,7 +144,7 @@
 <!-- HERO -->
 <div class="hero">
   <img id="photo">
-  <h2 id="full_name"></h2>
+  <h2 id="name"></h2>          <!-- ✅ HERO NAME -->
   <div class="title" id="title"></div>
   <div class="company" id="company"></div>
 </div>
@@ -158,13 +157,6 @@
   <a id="facebookBtn"><i class="fa-brands fa-facebook-f"></i></a>
 </div>
 
-  <div class="card">
-  <button onclick="saveContact()" style="width:100%;padding:12px;border:0;
-  border-radius:12px;background:#5b8cff;color:#fff;font-size:16px">
-    ➕ Add to Contacts
-  </button>
-</div>
-
 <!-- ABOUT -->
 <div class="card" id="aboutBox">
   <h3>About</h3>
@@ -174,8 +166,8 @@
 <!-- CONTACT -->
 <div class="card" id="contactBox">
   <p><b>Name:</b> <span id="fullName"></span></p>
-  <p><b>WhatsApp:</b> <span id="whatsappText"></span></p>
   <p><b>Address:</b> <span id="address"></span></p>
+  <p><b>WhatsApp:</b> <span id="whatsappText"></span></p>
 
   <h4 style="margin-top:15px">Hours of Operation</h4>
   <ul class="hours" id="hoursList"></ul>
@@ -204,33 +196,69 @@ const slug=new URLSearchParams(location.search).get("slug");
 fetch(API_URL+"?slug="+slug)
 .then(r=>r.json())
 .then(d=>{
- photo.src=d.photo_url||"";
- name.innerText=d.full_name||"";
- title.innerText=d.title||"";
- company.innerText=d.company||"";
+ if(d.error){document.body.innerHTML=d.error;return;}
 
- about.innerText=d.about||"";
- fullName.innerText=d.full_name||"";
- address.innerText=d.address||"";
- whatsappText.innerText=d.whatsapp||"";
+ /* HERO */
+ if(d.photo_url){
+   photo.src=d.photo_url;
+   photo.onerror=()=>photo.remove();
+ }
+ name.innerText = d.full_name || "";
+ title.innerText = d.title || "";
+ company.innerText = d.company || "";
 
- const days=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
- days.forEach(day=>{
-   const key="hours_"+day.toLowerCase();
-   if(d[key]){
-     hoursList.innerHTML+=`<li><span>${day}</span><span>${d[key]}</span></li>`;
-   }
+ /* ABOUT */
+ if(d.about) about.innerText=d.about;
+ else aboutBox.remove();
+
+ /* CONTACT */
+ fullName.innerText = d.full_name || "";
+ address.innerText = d.address || "";
+ whatsappText.innerText = d.whatsapp || "";
+
+ /* HOURS */
+ const days=[
+  ["Sunday","hours_sunday"],
+  ["Monday","hours_monday"],
+  ["Tuesday","hours_tuesday"],
+  ["Wednesday","hours_wednesday"],
+  ["Thursday","hours_thursday"],
+  ["Friday","hours_friday"],
+  ["Saturday","hours_saturday"]
+ ];
+ days.forEach(dy=>{
+  if(d[dy[1]]){
+    hoursList.innerHTML+=
+     `<li><span>${dy[0]}</span><span>${d[dy[1]]}</span></li>`;
+  }
  });
 
+ /* MAP */
+ if(d.map_iframe){
+   mapBox.innerHTML=d.map_iframe;
+ } else {
+   mapBox.remove();
+ }
+
+ /* LINKS */
  if(d.instagram) links.innerHTML+=link("Instagram",d.instagram,"ig","fa-instagram");
  if(d.facebook) links.innerHTML+=link("Facebook",d.facebook,"fb","fa-facebook-f");
  if(d.linkedin) links.innerHTML+=link("LinkedIn",d.linkedin,"li","fa-linkedin-in");
  if(d.website) links.innerHTML+=link("Website",d.website,"web","fa-globe");
+ if(!links.innerHTML.trim()) linksBox.remove();
+
+ /* GALLERY */
+ for(let i=1;i<=10;i++){
+   if(d["gallery_"+i]){
+     gallery.innerHTML+=`<img src="${d["gallery_"+i]}" onerror="this.remove()">`;
+   }
+ }
+ if(!gallery.innerHTML.trim()) galleryBox.remove();
 });
 
 function link(label,url,color,icon){
  return `<a href="${url}" target="_blank">
-   <span class="icon ${color}"><i class="fa-brands ${icon}"></i></span>${label}
+  <span class="icon ${color}"><i class="fa-brands ${icon}"></i></span>${label}
  </a>`;
 }
 </script>
