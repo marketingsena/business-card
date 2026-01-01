@@ -29,6 +29,18 @@
 <link rel="stylesheet"
  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+ /* ===== SKELETON LOADER ===== */
+.skeleton{
+  background: linear-gradient(90deg,#e6e6e6,#f5f5f5,#e6e6e6);
+  background-size:200% 100%;
+  animation: shimmer 1.2s infinite;
+  border-radius:6px;
+}
+@keyframes shimmer{
+  0%{background-position:200% 0}
+  100%{background-position:-200% 0}
+}
+
 <style>
 body{
  margin:0;font-family:Arial;background:#e9eef6;
@@ -183,6 +195,15 @@ iframe{width:100%;border-radius:15px;border:0}
 
 <!-- HERO -->
 <div class="hero">
+
+ <!-- HERO SKELETON (TEMPORARY) -->
+<div id="heroSkeleton">
+  <div class="skeleton" style="width:110px;height:110px;border-radius:50%;margin:0 auto 10px"></div>
+  <div class="skeleton" style="width:180px;height:22px;margin:0 auto 6px"></div>
+  <div class="skeleton" style="width:140px;height:16px;margin:0 auto 4px"></div>
+  <div class="skeleton" style="width:120px;height:14px;margin:0 auto"></div>
+</div>
+
   <img id="photo" class="profile-pic">
 
   <div class="hero-name-row">
@@ -271,9 +292,18 @@ fetch(API+"?slug="+slug).then(r=>r.json()).then(d=>{
    `<li><span>${x[0]}</span><span>${d[x[1]]}</span></li>`;
   /* CLEAN URL – REMOVE ?slug= */
 history.replaceState(null, "", "/business-card/" + slug);
+  document.getElementById("heroSkeleton")?.remove();
  });
 
- if(d.map_iframe) mapBox.innerHTML=d.map_iframe;
+ if(d.map_iframe){
+  // iframe me loading="lazy" inject karo
+  mapBox.innerHTML = d.map_iframe.replace(
+    "<iframe",
+    "<iframe loading='lazy'"
+  );
+} else {
+  mapBox.remove();
+}
 
  callBtn.href=d.phone?"tel:"+d.phone:"#";
  whatsappBtn.href=d.whatsapp?"https://wa.me/"+d.whatsapp.replace(/\D/g,""):"#";
@@ -286,15 +316,34 @@ history.replaceState(null, "", "/business-card/" + slug);
  if(d.website) links.innerHTML+=link("Website",d.website,"web","fa-globe");
  if(!links.innerHTML.trim()) linksBox.remove();
 
- for(let i=1;i<=10;i++){
-  if(d["gallery_"+i]){
-   const im=document.createElement("img");
-   im.src=d["gallery_"+i];
-   im.onclick=()=>openImg(im.src);
-   gallery.appendChild(im);
-   imgs.push(im.src);
+ gallery.innerHTML = "";
+imgs = [];
+
+// 🔹 gallery ko thoda late load karo (lazy feel)
+setTimeout(() => {
+
+  for(let i=1;i<=10;i++){
+    const key = "gallery_" + i;
+
+    if(d[key]){
+      const im = document.createElement("img");
+      im.src = d[key];
+      im.loading = "lazy";                 // ✅ REAL lazy load
+      im.onclick = () => openImg(im.src);
+      im.onerror = () => im.remove();
+
+      gallery.appendChild(im);
+      imgs.push(im.src);
+    }
   }
- }
+
+  // agar gallery empty hai to pura box hata do
+  if(!gallery.innerHTML.trim()){
+    galleryBox.remove();
+  }
+
+}, 500);
+
 });
 
 function openImg(src){
