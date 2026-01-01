@@ -29,20 +29,7 @@
 <link rel="stylesheet"
  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-<style>
-
-/* ===== SKELETON LOADER ===== */
-.skeleton{
-  background: linear-gradient(90deg,#e6e6e6,#f5f5f5,#e6e6e6);
-  background-size:200% 100%;
-  animation: shimmer 1.2s infinite;
-  border-radius:6px;
-}
-@keyframes shimmer{
-  0%{background-position:200% 0}
-  100%{background-position:-200% 0}
-}
- 
+<style> 
 body{
  margin:0;font-family:Arial;background:#e9eef6;
  display:flex;justify-content:center;
@@ -293,11 +280,6 @@ fetch(API+"?slug="+slug).then(r=>r.json()).then(d=>{
    `<li><span>${x[0]}</span><span>${d[x[1]]}</span></li>`;
   /* CLEAN URL – REMOVE ?slug= */
 history.replaceState(null, "", "/business-card/" + slug);
-  // ✅ SKELETON HIDE (DATA LOAD HO GAYA)
-document.querySelectorAll(".skeleton").forEach(el => {
-  el.classList.remove("skeleton");
-});
-
  });
 
  if(d.map_iframe){
