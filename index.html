@@ -253,7 +253,7 @@ let DATA,imgs=[],idx=0;
 const API="https://script.google.com/macros/s/AKfycbw9xyX1Zh388XgEiFu7ptEYbCBRvegAiwl6DbQqq2FAS1VWnI7DX4sI4pXCQ1quWpsftg/exec";
 const slug=new URLSearchParams(location.search).get("slug");
 
-fetch(API+"?slug="+slug).then(r=>r.json()).then(d=>{
+fetch(API_URL + "?slug=" + slug, { cache: "no-store" }).then(r=>r.json()).then(d=>{
  DATA=d;
  photo.src=d.photo_url||"";
  heroName.innerText=d.full_name||"";
