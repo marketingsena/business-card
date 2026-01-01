@@ -293,7 +293,11 @@ fetch(API+"?slug="+slug).then(r=>r.json()).then(d=>{
    `<li><span>${x[0]}</span><span>${d[x[1]]}</span></li>`;
   /* CLEAN URL – REMOVE ?slug= */
 history.replaceState(null, "", "/business-card/" + slug);
-  document.getElementById("heroSkeleton")?.remove();
+  // ✅ SKELETON HIDE (DATA LOAD HO GAYA)
+document.querySelectorAll(".skeleton").forEach(el => {
+  el.classList.remove("skeleton");
+});
+
  });
 
  if(d.map_iframe){
