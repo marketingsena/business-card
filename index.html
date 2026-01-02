@@ -253,7 +253,20 @@ iframe{width:100%;border-radius:15px;border:0}
      Book an Appointment
   </a>
 </div>
- 
+
+ <!-- ENQUIRY -->
+<div class="card" id="enquiryBox">
+  <h3>📝 Enquiry</h3>
+
+  <a id="enquiryBtn"
+     style="display:block;text-align:center;
+     padding:14px;border-radius:14px;
+     background:#25d366;color:#fff;
+     font-weight:600;text-decoration:none">
+     Send Enquiry
+  </a>
+</div>
+
  <!-- EMAILS -->
 <div class="card" id="emailBox">
   <h3>📧 Email</h3>
@@ -397,6 +410,12 @@ if (d.appointment_url) {
   appointmentBox.remove();
 }
 
+  /* ========= ENQUIRY ========= */
+if (d.enquiry_form_url) {
+  enquiryBtn.href = d.enquiry_form_url;
+} else {
+  enquiryBox.remove();
+}
 
 /* ========= EMAIL SECTION (GMAIL ICON) ========= */
 let emailHTML = "";
