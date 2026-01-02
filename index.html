@@ -241,6 +241,19 @@ iframe{width:100%;border-radius:15px;border:0}
  <div class="links" id="links"></div>
 </div>
 
+<!-- APPOINTMENT -->
+<div class="card" id="appointmentBox">
+  <h3>📅 Appointment</h3>
+
+  <a id="appointmentBtn"
+     style="display:block;text-align:center;
+     padding:14px;border-radius:14px;
+     background:#5b8cff;color:#fff;
+     font-weight:600;text-decoration:none">
+     Book an Appointment
+  </a>
+</div>
+ 
  <!-- EMAILS -->
 <div class="card" id="emailBox">
   <h3>📧 Email</h3>
@@ -375,6 +388,15 @@ function addCustomLink(label, url) {
   
 /* AUTO HIDE */
  if(!links.innerHTML.trim()) linksBox.remove();
+  
+
+  /* ========= APPOINTMENT ========= */
+if (d.appointment_url) {
+  appointmentBtn.href = d.appointment_url;
+} else {
+  appointmentBox.remove();
+}
+
 
 /* ========= EMAIL SECTION (GMAIL ICON) ========= */
 let emailHTML = "";
