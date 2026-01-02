@@ -331,26 +331,48 @@ if (d.gmb_review_url) {
     </a>`;
 }
 
-  /* ========= CUSTOM LINKS ========= */
-if (d.custom1_label && d.custom1_url) {
-  links.innerHTML += `
-    <a href="${d.custom1_url}" target="_blank">
-      <span class="icon web">
-        <i class="fa-solid fa-link"></i>
-      </span>
-      ${d.custom1_label}
-    </a>`;
-}
+ /* ========= SMART CUSTOM LINKS ========= */
+addCustomLink(d.custom1_label, d.custom1_url);
+addCustomLink(d.custom2_label, d.custom2_url);
 
-if (d.custom2_label && d.custom2_url) {
+function addCustomLink(label, url) {
+  if (!label || !url) return;
+
+  let iconClass = "fa-link";
+  let bg = "#5b8cff"; // default blue
+
+  const u = url.toLowerCase();
+
+  // FORM
+  if (u.includes("forms.gle") || u.includes("google.com/forms")) {
+    iconClass = "fa-clipboard-list";
+    bg = "#673ab7";
+  }
+  // PDF
+  else if (u.endsWith(".pdf")) {
+    iconClass = "fa-file-pdf";
+    bg = "#e53935";
+  }
+  // PORTFOLIO / WEBSITE
+  else if (u.includes("portfolio") || u.includes("website") || u.includes("about")) {
+    iconClass = "fa-briefcase";
+    bg = "#00897b";
+  }
+  // PAYMENT
+  else if (u.includes("pay") || u.includes("razorpay") || u.includes("upi")) {
+    iconClass = "fa-credit-card";
+    bg = "#2e7d32";
+  }
+
   links.innerHTML += `
-    <a href="${d.custom2_url}" target="_blank">
-      <span class="icon web">
-        <i class="fa-solid fa-link"></i>
+    <a href="${url}" target="_blank">
+      <span class="icon" style="background:${bg}">
+        <i class="fa-solid ${iconClass}"></i>
       </span>
-      ${d.custom2_label}
+      ${label}
     </a>`;
 }
+  
 /* AUTO HIDE */
  if(!links.innerHTML.trim()) linksBox.remove();
 
