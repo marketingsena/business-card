@@ -330,6 +330,28 @@ if (d.gmb_review_url) {
       Review us on Google
     </a>`;
 }
+
+  /* ========= CUSTOM LINKS ========= */
+if (d.custom1_label && d.custom1_url) {
+  links.innerHTML += `
+    <a href="${d.custom1_url}" target="_blank">
+      <span class="icon web">
+        <i class="fa-solid fa-link"></i>
+      </span>
+      ${d.custom1_label}
+    </a>`;
+}
+
+if (d.custom2_label && d.custom2_url) {
+  links.innerHTML += `
+    <a href="${d.custom2_url}" target="_blank">
+      <span class="icon web">
+        <i class="fa-solid fa-link"></i>
+      </span>
+      ${d.custom2_label}
+    </a>`;
+}
+/* AUTO HIDE */
  if(!links.innerHTML.trim()) linksBox.remove();
 
 /* ========= EMAIL SECTION (GMAIL ICON) ========= */
