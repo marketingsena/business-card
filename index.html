@@ -322,10 +322,10 @@ history.replaceState(null, "", "/business-card/" + slug);
  if(d.website) links.innerHTML+=link("Website",d.website,"web","fa-globe");
  if(!links.innerHTML.trim()) linksBox.remove();
 
- /* ========= EMAIL SECTION (GMAIL ICON) ========= */
+/* ========= EMAIL SECTION (GMAIL ICON) ========= */
 let emailHTML = "";
 
-if (d.email) emailHTML += emailItem(d.email);
+if (d.email_1) emailHTML += emailItem(d.email_1);
 if (d.email_2) emailHTML += emailItem(d.email_2);
 if (d.email_3) emailHTML += emailItem(d.email_3);
 
