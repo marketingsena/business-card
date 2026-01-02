@@ -527,60 +527,6 @@ setTimeout(() => {
   }
 
 }, 500);
-
-/* ========= PRODUCTS / CATALOGUE ========= */
-let prodHTML = "";
-
-for (let i = 1; i <= 3; i++) {
-
-  const name = d["product_" + i + "_name"];
-  if (!name) continue;
-
-  const price = d["product_" + i + "_price"] || "";
-  const img = d["product_" + i + "_image"] || "";
-  const url = d["product_" + i + "_url"];
-  const wa = d["product_" + i + "_whatsapp"];
-
-  prodHTML += `
-    <div class="product">
-
-      ${img ? `<img src="${img}" loading="lazy">` : ""}
-
-      <div class="product-name">${name}</div>
-      ${price ? `<div class="product-price">${price}</div>` : ""}
-
-      <div class="product-actions">
-
-        ${url ? `
-          <a href="${url}" target="_blank" class="btn-cart">
-            Add to Cart
-          </a>` : ""}
-
-        ${wa ? `
-          <a href="https://wa.me/${wa.replace(/\D/g,"")}?text=${encodeURIComponent(
-`Hello 👋
-I want to order this product:
-
-📦 Product: ${name}
-💰 Price: ${price || "NA"}
-🖼️ Image: ${img || "Image not available"}
-
-Please share next steps.`
-          )}"
-          target="_blank"
-          class="btn-wa">
-            Order on WhatsApp
-          </a>` : ""}
-
-      </div>
-    </div>`;
-}
-
-if (prodHTML) {
-  productsList.innerHTML = prodHTML;
-} else {
-  productsBox.remove();
-}
   
 });
 
