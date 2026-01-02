@@ -145,7 +145,7 @@ body{
 .li{background:#0077b5}
 .web{background:#5b8cff}
 
- .icon.mail{
+.icon.mail{
   background:#fff;
   border:1px solid #e0e0e0;
 }
@@ -322,20 +322,12 @@ history.replaceState(null, "", "/business-card/" + slug);
  if(d.website) links.innerHTML+=link("Website",d.website,"web","fa-globe");
  if(!links.innerHTML.trim()) linksBox.remove();
 
-  /* ========= EMAIL SECTION ========= */
+ /* ========= EMAIL SECTION (GMAIL ICON) ========= */
 let emailHTML = "";
 
-["email_1", "email_2", "email_3"].forEach(key => {
-  if (d[key]) {
-    emailHTML += `
-      <a href="mailto:${d[key]}">
-        <span class="icon mail">
-          <i class="fa-solid fa-envelope"></i>
-        </span>
-        ${d[key]}
-      </a>`;
-  }
-});
+if (d.email) emailHTML += emailItem(d.email);
+if (d.email_2) emailHTML += emailItem(d.email_2);
+if (d.email_3) emailHTML += emailItem(d.email_3);
 
 if (emailHTML) {
   document.getElementById("emailLinks").innerHTML = emailHTML;
@@ -343,6 +335,17 @@ if (emailHTML) {
   document.getElementById("emailBox").remove();
 }
 
+function emailItem(mail){
+  return `
+    <a href="mailto:${mail}">
+      <span class="icon mail">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Gmail_Icon.png"
+             alt="Gmail"
+             style="width:18px;height:18px">
+      </span>
+      ${mail}
+    </a>`;
+}
 
  gallery.innerHTML = "";
 imgs = [];
