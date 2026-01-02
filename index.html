@@ -145,6 +145,14 @@ body{
 .li{background:#0077b5}
 .web{background:#5b8cff}
 
+ .icon.mail{
+  background:#fff;
+  border:1px solid #e0e0e0;
+}
+.icon.mail img{
+  display:block;
+}
+
 /* GALLERY */
 .gallery{
  display:grid;grid-template-columns:repeat(2,1fr);
@@ -236,7 +244,20 @@ iframe{width:100%;border-radius:15px;border:0}
  <!-- EMAILS -->
 <div class="card" id="emailBox">
   <h3>📧 Email</h3>
-  <div class="links" id="emailLinks"></div>
+
+  <div class="links" id="emailLinks">
+
+    <!-- EMAIL 1 -->
+    <a href="mailto:themarketingsena@gmail.com">
+      <span class="icon mail">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Gmail_Icon.png"
+             alt="Gmail"
+             style="width:18px;height:18px">
+      </span>
+      themarketingsena@gmail.com
+    </a>
+
+  </div>
 </div>
 
 <!-- GALLERY -->
