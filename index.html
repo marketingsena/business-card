@@ -320,6 +320,16 @@ history.replaceState(null, "", "/business-card/" + slug);
  if(d.facebook) links.innerHTML+=link("Facebook",d.facebook,"fb","fa-facebook-f");
  if(d.linkedin) links.innerHTML+=link("LinkedIn",d.linkedin,"li","fa-linkedin-in");
  if(d.website) links.innerHTML+=link("Website",d.website,"web","fa-globe");
+  /* ========= GOOGLE REVIEWS LINK ========= */
+if (d.gmb_review_url) {
+  links.innerHTML += `
+    <a href="${d.gmb_review_url}" target="_blank">
+      <span class="icon web" style="background:#fbbc05;color:#000">
+        <i class="fa-solid fa-star"></i>
+      </span>
+      ⭐ Review us on Google
+    </a>`;
+}
  if(!links.innerHTML.trim()) linksBox.remove();
 
 /* ========= EMAIL SECTION (GMAIL ICON) ========= */
